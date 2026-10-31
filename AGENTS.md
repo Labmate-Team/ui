@@ -161,7 +161,7 @@ tracing, mist, editing) stays in the LabMate app.
 - Ghost text buttons are Ink text with a 1.5px underline offset 4px (§7.13);
   ghost ICON buttons rest on a Mist plate (`--icon-plate`). TextButton
   (`size="text"`) and block rows keep the plain hover chip.
-- Icons: use `LabIcon` (the 25-icon set, stroke by size: 16→2, 20→1.75,
+- Icons: use `LabIcon` (the 27-icon set, stroke by size: 16→2, 20→1.75,
   24→1.5, 32→1.25). Lucide glyphs inside components are forced to mitred
   joins and square caps.
 - Card marks: `TagChip` (Mist, lowercase mono, square), `PriorityMark`

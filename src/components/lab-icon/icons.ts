@@ -26,6 +26,8 @@ export const LAB_ICONS = {
   settings: 'M12 2l9 5v10l-9 5-9-5V7z M12 9l3 1.5v3L12 15l-3-1.5v-3z',
   add: 'M12 4v16 M4 12h16',
   edit: 'M3.5 20.5v-4l13-13 4 4-13 13z M13.5 6.5l4 4',
+  check: 'M4 12.5l5 5 11-11',
+  close: 'M5 5l14 14 M19 5L5 19',
 } as const
 
 export type LabIconName = keyof typeof LAB_ICONS
