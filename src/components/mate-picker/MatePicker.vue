@@ -110,7 +110,7 @@ function onInteractOutside(e: Event): void {
 </script>
 
 <template>
-  <div data-slot="mate-picker" :class="cn('flex flex-col gap-2', props.class)">
+  <div data-slot="mate-picker" :class="cn('flex flex-col gap-3', props.class)">
     <div v-for="row in selected" :key="row.id" data-slot="mate-picker-row" class="flex items-center gap-3">
       <MateAvatar kind="human" :name="row.label" initials="" size="md" />
       <span class="min-w-0 flex-1 truncate text-control" :title="row.label">{{ row.label }}</span>
