@@ -16,7 +16,8 @@ import { cn } from '#/lib/utils'
 
 // Mate picker — add people by searching. The host owns the data: it fetches `candidates` for the `query` (v-model) and
 // turns add / remove / role events into its own list; the picker only composes.
-// - Chosen people, one row each: avatar, name (+ note chip), a role Select, a remove TextButton.
+// - Chosen people, one row each: avatar, name (+ note chip), a role Select, a remove TextButton. The avatar is the
+//   Select's height (md = 36px = the sm trigger), so the row's boxes share one top and bottom edge.
 // - Below them a search field (search glyph + input). While it has text and focus, a floating Command list anchored to it
 //   shows the candidates not chosen yet (avatar, name, note chip, hint on the right). Avatars are plain human octagons: a
 //   label may carry an id tail, so initials derived from it would mislead. Focus stays in the Input (CommandKeyBridge): ↑/↓ move the
@@ -111,13 +112,13 @@ function onInteractOutside(e: Event): void {
 <template>
   <div data-slot="mate-picker" :class="cn('flex flex-col gap-2', props.class)">
     <div v-for="row in selected" :key="row.id" data-slot="mate-picker-row" class="flex items-center gap-3">
-      <MateAvatar kind="human" :name="row.label" initials="" size="sm" />
-      <span class="min-w-0 flex-1 truncate text-control">{{ row.label }}</span>
+      <MateAvatar kind="human" :name="row.label" initials="" size="md" />
+      <span class="min-w-0 flex-1 truncate text-control" :title="row.label">{{ row.label }}</span>
       <TagChip v-if="row.note">
         {{ row.note }}
       </TagChip>
       <Select :model-value="row.role" @update:model-value="(v) => emit('update:role', row.id, String(v))">
-        <SelectTrigger size="sm" class="w-36" :aria-label="roleLabel(row)">
+        <SelectTrigger size="sm" class="w-30" :aria-label="roleLabel(row)">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
