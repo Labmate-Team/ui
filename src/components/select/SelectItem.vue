@@ -12,11 +12,12 @@ import {
 } from 'reka-ui'
 import { menuItemClass } from '#/lib/menu'
 import { cn } from '#/lib/utils'
-import { StatusCorner, StatusTile } from '../status-chip'
+import { StatusTile } from '../status-chip'
 
-// `status` marks the row with a node status (labmate panel: the graph's focus picker): a StatusCorner in the row's
-// top-left corner and a StatusTile just before the check — colour and glyph together (§14.2). `statusLabel` is the
-// tile's localized accessible name.
+// `status` leads the row with a node status (labmate panel: the graph's focus picker): a StatusTile before the text,
+// colour and glyph together (§14.2). The tile is a <span>, so the row stays a plain flex row (gap-2), not the menu's
+// leading-icon grid, and it sits outside SelectItemText, so the trigger's SelectValue shows the text alone.
+// `statusLabel` is the tile's localized accessible name.
 const props = defineProps<SelectItemProps & { class?: HTMLAttributes['class'], status?: NodeStatus, statusLabel?: string }>()
 
 const delegatedProps = reactiveOmit(props, 'class', 'status', 'statusLabel')
@@ -31,16 +32,13 @@ const forwardedProps = useForwardProps(delegatedProps)
     :class="
       cn(
         menuItemClass,
-        status ? 'pr-15' : 'pr-9',
+        'pr-9',
         '*:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2',
         props.class,
       )
     "
   >
-    <StatusCorner v-if="status" :status="status" />
-    <span v-if="status" class="absolute right-9 flex items-center">
-      <StatusTile :status="status" :label="statusLabel" />
-    </span>
+    <StatusTile v-if="status" :status="status" :label="statusLabel" />
     <span class="absolute right-3 flex size-3.5 items-center justify-center">
       <SelectItemIndicator>
         <slot name="indicator-icon">

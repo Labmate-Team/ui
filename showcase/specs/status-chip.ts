@@ -1,7 +1,7 @@
 import type { ComponentSpec } from '../lib/spec'
 import { h } from 'vue'
 import { ActivityChip } from '#/components/activity-chip'
-import { NODE_STATUSES, StatusChip, StatusCorner, StatusTile, WORK_STATUSES } from '#/components/status-chip'
+import { NODE_STATUSES, StatusChip, StatusTile, WORK_STATUSES } from '#/components/status-chip'
 
 export const statusChipSpec: ComponentSpec = {
   id: 'status-chip',
@@ -27,15 +27,10 @@ export const statusChipSpec: ComponentSpec = {
       render: () => (['running', 'planning', 'waiting', 'blocked', 'idle', 'done'] as const).map(status => h(ActivityChip, { status })),
     },
     {
-      name: 'Tile and corner',
-      nameZh: '方块与角标',
-      note: 'For rows too narrow for a chip (menu rows, select triggers): StatusTile is the chip reduced to its square; StatusCorner marks the row\'s top-left corner. They travel together — Select does both from one `status` prop. Both take a milestone\'s locked / ready too.',
-      render: () => NODE_STATUSES.map(status =>
-        // Demo staging only: a bare 40px Paper square so the corner has a host corner to sit in.
-        h('span', { class: 'relative inline-flex size-10 items-center justify-center border border-border bg-background' }, [
-          h(StatusCorner, { status }),
-          h(StatusTile, { status }),
-        ])),
+      name: 'Tile',
+      nameZh: '方块',
+      note: 'For rows too narrow for a chip (menu rows, select triggers): StatusTile is the chip reduced to its square — plate, edge and glyph, no text. Select puts one at the start of a row from its `status` prop. Takes a milestone\'s locked / ready too.',
+      render: () => NODE_STATUSES.map(status => h(StatusTile, { status })),
     },
     {
       name: 'Chamfered',

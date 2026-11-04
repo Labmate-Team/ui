@@ -27,7 +27,7 @@ export const PADLOCK_OPEN = 'M6 11h12v10H6z M8.5 11V6.5L12 4l3.5 2.5V7.5'
 /**
  * Glyph, planes and edge of any node status — the six work statuses plus a milestone's locked / ready, which share the
  * grey planes (§8.6). The edge is the deep plane, except not-started, whose planes are the wells: it takes Fog, as the
- * not-started StatusChip does, so the mark still reads on Paper.
+ * not-started StatusChip does, so the tile still reads on Paper.
  */
 export function nodeStatusMark(status: NodeStatus) {
   const pre = status === 'locked' || status === 'ready'

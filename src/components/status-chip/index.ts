@@ -1,6 +1,5 @@
 export { default as StatusChip } from './StatusChip.vue'
 export { default as StatusGlyph } from './StatusGlyph.vue'
-export { default as StatusCorner } from './StatusCorner.vue'
 export { default as StatusTile } from './StatusTile.vue'
 export { nodeStatusMark, PADLOCK, PADLOCK_OPEN, statusPlanes, STATUS_GLYPH } from './glyphs'
 export { NODE_STATUS_LABEL, NODE_STATUSES, WORK_STATUS_LABEL, WORK_STATUSES } from './types'

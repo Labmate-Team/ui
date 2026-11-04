@@ -94,7 +94,7 @@ export const selectSpec: ComponentSpec = {
       name: 'Status marks',
       nameZh: '状态标记',
       state: { value: 'g1' },
-      note: '`status` on SelectItem marks the row: a StatusCorner in its top-left corner and a StatusTile before the check. The same prop on SelectTrigger shows the chosen value\'s status — a band along the cut corner and a tile before the chevron. Takes any node status, a milestone\'s locked / ready included.',
+      note: '`status` on SelectItem leads the row with a StatusTile (colour and glyph). The same prop on SelectTrigger leads the chosen value with its tile. Takes any node status, a milestone\'s locked / ready included.',
       render: state =>
         h(
           Select,

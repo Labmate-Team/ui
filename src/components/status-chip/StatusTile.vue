@@ -7,7 +7,7 @@ import { nodeStatusMark } from './glyphs'
 import { NODE_STATUS_LABEL } from './types'
 
 // The status tile: a StatusChip reduced to its square — the status base plane, its edge and its glyph, no text — for
-// rows too narrow for a chip (a menu row, a select trigger). Colour and glyph travel together (§14.2); not-started has
+// rows too narrow for a chip (a menu row, a select trigger, where it leads the text). Colour and glyph travel together (§14.2); not-started has
 // no glyph (§3.3), so its tile is the well plate alone. Takes any node status, a milestone's locked / ready included.
 const props = defineProps<{
   status: NodeStatus
