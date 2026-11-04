@@ -2630,12 +2630,14 @@
 @layer components {
   /* ── Icon-only buttons: a Mist plate (design doc controls) ───────────────
      An icon alone has no text weight to read as a control, so the ghost icon
-     button rests on a plate; hover deepens it one well step. */
-  [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-lg"])::before {
+     button rests on a plate; hover deepens it one well step. A `bare` ghost
+     ([data-bare], inside a framed group whose frame already reads as the
+     control) has no plate: transparent at rest, the plain ghost hover chip. */
+  [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-lg"]):not([data-bare])::before {
     background-color: var(--icon-plate);
   }
   @media (hover: hover) {
-    [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-lg"]):hover::before {
+    [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-lg"]):not([data-bare]):hover::before {
       background-color: var(--icon-plate-hover);
     }
   }
@@ -2644,9 +2646,9 @@
      Only a standalone text action — not icon buttons, the compact TextButton
      rung, full-width (block) rows, navigation rows (NavItem / anything in a
      nav or [data-sidebar]; a plain <aside> panel is not navigation and keeps
-     the underline), or menu / popover triggers (they carry aria-haspopup or
-     a reka data-state). */
-  [data-button][data-variant="ghost"]:not([data-size^="icon"]):not([data-size="text"]):not([data-block]):not([data-settings-nav-item]):not([aria-haspopup]):not([data-state]):not(nav *):not([data-sidebar] *) {
+     the underline), menu / popover triggers (they carry aria-haspopup or
+     a reka data-state), or a `bare` ghost ([data-bare], inside a framed group). */
+  [data-button][data-variant="ghost"]:not([data-size^="icon"]):not([data-size="text"]):not([data-block]):not([data-settings-nav-item]):not([aria-haspopup]):not([data-state]):not([data-bare]):not(nav *):not([data-sidebar] *) {
     text-decoration-line: underline;
     text-decoration-thickness: var(--stroke);
     text-underline-offset: 4px;

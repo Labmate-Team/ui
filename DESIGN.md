@@ -44,7 +44,7 @@ Flat, always. Floating menus, popovers, dialogs and panels are separated by a **
 - **Buttons**:
   - Default / Primary: 8px radius, charcoal fill (`--btn-primary`) with hover/press ramps on the pseudo-element shell. This is the standard high-emphasis action; `default` and `primary` are visual aliases.
   - Outline / Secondary: 8px radius, transparent rest state with a 1px inset ring, gray hover fill, and shell-only press scale. `outline` and `secondary` are visual aliases.
-  - Ghost: No chrome at rest; soft gray hover fill. Use for toolbar/icon actions that should not carry standalone affordance.
+  - Ghost: No chrome at rest; soft gray hover fill. Use for toolbar/icon actions that should not carry standalone affordance. Two resting marks still apply: an icon-only ghost rests on a Mist plate, a text ghost is underlined (§7.13). `bare` drops both, for cells of a framed group (GraphZoom) whose frame already reads as the control.
   - Destructive: Text/icon turns destructive on hover with a light destructive hover fill; avoid solid red buttons for normal destructive actions.
   - Link: Muted text by default, foreground on hover, with underline feedback. Avoid brand purple for ordinary text links.
   - Grouped (`ButtonGroup`): Unified outer border (`border-border`, 8px radius). Internal items divided by `border-r` or `border-b`, no individual borders or radiuses.

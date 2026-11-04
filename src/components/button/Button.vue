@@ -13,6 +13,10 @@ interface Props extends PrimitiveProps {
   size?: ButtonVariants['size']
   /** Muted resting color for ghost toolbar actions; interaction restores foreground. */
   tone?: 'default' | 'muted'
+  /** Ghost only: no resting mark at all — the icon plate (icon sizes) and the text underline (§7.13) are dropped, the
+   *  hover / press chip stays. For buttons inside a framed group whose frame already reads as the control (GraphZoom's
+   *  cells); a standalone ghost button keeps its marks. */
+  bare?: boolean
   /** Corner shape, orthogonal to size. `circle` forces rounded-full over the
    *  size's rounded-md — use with size="icon"/"icon-sm" for a round icon button
    *  instead of hand-writing `class="rounded-full"` at the call site. */
@@ -77,6 +81,7 @@ const buttonClass = computed(() =>
     :as-child="asChild"
     :data-variant="resolvedVariant"
     :data-tone="resolvedVariant === 'ghost' ? tone : undefined"
+    :data-bare="resolvedVariant === 'ghost' && bare ? '' : undefined"
     :data-size="size || undefined"
     :data-block="block ? '' : undefined"
     :data-loading="loading ? '' : undefined"

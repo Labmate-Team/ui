@@ -43,6 +43,7 @@ export const buttonSpec: ComponentSpec = {
     },
     { kind: 'boolean', key: 'disabled', label: 'Disabled', default: false },
     { kind: 'boolean', key: 'block', label: 'Block', default: false },
+    { kind: 'boolean', key: 'bare', label: 'Bare', default: false, when: state => state.variant === 'ghost' },
   ],
   // The canonical review grid: every variant in every size.
   matrix: { rows: 'variant', cols: 'size' },
@@ -56,6 +57,18 @@ export const buttonSpec: ComponentSpec = {
         h(Button, () => [h(Plus), 'New']),
         h(Button, { variant: 'secondary' }, () => ['Continue', h(ArrowRight)]),
         h(Button, { variant: 'ghost', size: 'icon', 'aria-label': 'Refresh' }, () => h(RefreshCw)),
+      ],
+    },
+    {
+      name: 'Bare ghost',
+      nameZh: '无标记的 ghost',
+      note: 'A ghost button rests with a mark: icon-only on a Mist plate, text underlined. `bare` drops both and keeps the plain hover chip — only for cells of a framed group whose frame already reads as the control (GraphZoom).',
+      noteZh: 'ghost 按钮静止时带标记:纯图标的垫 Mist 底,文字的带下划线。`bare` 两样都去掉,只留普通的悬停底——只用于外框已经表明是控件的成组格子里(GraphZoom)。',
+      render: () => [
+        h(Button, { variant: 'ghost', size: 'icon-sm', 'aria-label': 'Zoom in' }, () => h(Plus)),
+        h(Button, { variant: 'ghost', size: 'sm' }, () => '71%'),
+        h(Button, { variant: 'ghost', size: 'icon-sm', bare: true, 'aria-label': 'Zoom in' }, () => h(Plus)),
+        h(Button, { variant: 'ghost', size: 'sm', bare: true }, () => '71%'),
       ],
     },
     {
