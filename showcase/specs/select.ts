@@ -1,4 +1,5 @@
 import type { ComponentSpec } from '../lib/spec'
+import type { NodeStatus } from '#/components/status-chip'
 import { h } from 'vue'
 import {
   Select,
@@ -26,6 +27,20 @@ const OPENAI_MODELS = [
 const ALL_MODELS = [...CLAUDE_MODELS, ...OPENAI_MODELS]
 
 const PLACEHOLDER = 'Pick a model'
+
+// Graph nodes with their status (the labmate panel's focus picker): one row per node kind group.
+interface FocusNode { value: string, label: string, status: NodeStatus }
+const FOCUS_NODES: Array<{ group: string, items: FocusNode[] }> = [
+  { group: 'Goal', items: [{ value: 'g1', label: 'Paper draft', status: 'ongoing' }, { value: 'g2', label: 'Open-source release', status: 'not-started' }] },
+  { group: 'Milestone', items: [{ value: 'm1', label: 'Mid-term review', status: 'locked' }] },
+  { group: 'Task', items: [
+    { value: 't1', label: 'LAB-001 Run the baseline', status: 'completed' },
+    { value: 't2', label: 'LAB-004 Ablation A', status: 'failed' },
+    { value: 't3', label: 'LAB-005 Tidy the repo', status: 'halted' },
+    { value: 't4', label: 'LAB-007 Plot the results', status: 'paused' },
+  ] },
+]
+const FOCUS_ITEMS = FOCUS_NODES.flatMap(g => g.items)
 
 function triggerAndContent(state: Record<string, unknown>, items: () => unknown) {
   const size = state.size as 'default' | 'sm' | 'lg'
@@ -73,6 +88,27 @@ export const selectSpec: ComponentSpec = {
                 ...OPENAI_MODELS.map(m => h(SelectItem, { value: m.value }, () => h(SelectItemText, null, () => m.label))),
               ]),
             ]),
+        ),
+    },
+    {
+      name: 'Status marks',
+      nameZh: '状态标记',
+      state: { value: 'g1' },
+      note: '`status` on SelectItem marks the row: a StatusCorner in its top-left corner and a StatusTile before the check. The same prop on SelectTrigger shows the chosen value\'s status — a band along the cut corner and a tile before the chevron. Takes any node status, a milestone\'s locked / ready included.',
+      render: state =>
+        h(
+          Select,
+          {
+            modelValue: String(state.value),
+            'onUpdate:modelValue': (v: unknown) => (state.value = String(v)),
+          },
+          () => [
+            h(SelectTrigger, { class: 'w-72', status: FOCUS_ITEMS.find(i => i.value === state.value)?.status }, () => h(SelectValue, { placeholder: 'Pick a node' })),
+            h(SelectContent, null, () => FOCUS_NODES.map(g => h(SelectGroup, null, () => [
+              h(SelectLabel, null, () => g.group),
+              ...g.items.map(i => h(SelectItem, { value: i.value, status: i.status }, () => h(SelectItemText, null, () => i.label))),
+            ]))),
+          ],
         ),
     },
   ],

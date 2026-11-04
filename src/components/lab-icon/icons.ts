@@ -28,6 +28,11 @@ export const LAB_ICONS = {
   edit: 'M3.5 20.5v-4l13-13 4 4-13 13z M13.5 6.5l4 4',
   check: 'M4 12.5l5 5 11-11',
   close: 'M5 5l14 14 M19 5L5 19',
+  // Graph controls (labmate panel: zoom strip and focus): minus pairs with add; fit is four corner brackets; focus is a target —
+  // an octagon ring (circles become octagons, §2.1) with four ticks, so it never reads as add.
+  minus: 'M4 12h16',
+  fit: 'M3 8V3h5 M16 3h5v5 M21 16v5h-5 M8 21H3v-5',
+  focus: 'M9.5 6h5L18 9.5v5L14.5 18h-5L6 14.5v-5z M12 2v4 M12 18v4 M2 12h4 M18 12h4',
 } as const
 
 export type LabIconName = keyof typeof LAB_ICONS

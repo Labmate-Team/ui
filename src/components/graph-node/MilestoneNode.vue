@@ -3,7 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { MilestoneStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
-import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
+import { PADLOCK, PADLOCK_OPEN, STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import NodeLabel from './NodeLabel.vue'
 import { STATUS_NAME, NODE_TEXT } from './types'
 
@@ -27,9 +27,6 @@ const props = withDefaults(defineProps<{
   ring?: boolean
   class?: HTMLAttributes['class']
 }>(), { status: 'locked', daysLeft: 0, totalDays: 30, reqDone: 0, reqTotal: 0, ring: true })
-
-const PADLOCK = 'M6 11h12v10H6z M8.5 11V6.5L12 4l3.5 2.5V11'
-const PADLOCK_OPEN = 'M6 11h12v10H6z M8.5 11V6.5L12 4l3.5 2.5V7.5'
 
 const pre = computed(() => props.status === 'locked' || props.status === 'ready')
 const c = computed(() => statusPlanes(pre.value ? 'locked' : props.status as Exclude<MilestoneStatus, 'locked' | 'ready'>))

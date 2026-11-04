@@ -10,3 +10,9 @@ export const WORK_STATUS_LABEL: Record<WorkStatus, string> = {
   'failed': 'Failed',
   'halted': 'Halted',
 }
+
+/** Any node's status: the work statuses plus a milestone's pre-states (§8.6). */
+export const NODE_STATUSES = [...WORK_STATUSES, 'locked', 'ready'] as const
+export type NodeStatus = (typeof NODE_STATUSES)[number]
+
+export const NODE_STATUS_LABEL: Record<NodeStatus, string> = { ...WORK_STATUS_LABEL, locked: 'Locked', ready: 'Ready to unlock' }
