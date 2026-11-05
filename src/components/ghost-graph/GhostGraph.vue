@@ -33,8 +33,8 @@ const BOWL = [
   ['var(--paper)', 'l'], ['var(--facet-paper)', 'l'], ['var(--facet-shade)', 'd'], ['var(--well)', 'b'],
   ['var(--well-deep)', 'd'], ['var(--facet-paper)', 'l'], ['var(--fog)', 'd'], ['var(--facet-mid)', 'b'],
 ] as const
-const STAND_ROLES: readonly Role[] = ['l', 'd', 'l', 'd', 'l', 'b', 'd']
-const standFill = STAND_ROLES.map(r => TONE[r].base)
+/** The stand (stem, knop, foot) lights with the bowl: the whole node glows as the light passes, like every other node. */
+const stand = byRole(PROJECT_GOAL_GEOMETRY.stand, ['l', 'd', 'l', 'd', 'l', 'b', 'd'])
 
 /** Place a node's viewBox box (w × h at scale s) centred on (x, rail). */
 const place = (x: number, w: number, h: number, s: number) => `translate(${x - (w * s) / 2} ${GHOST_GRAPH_SIZE.rail - (h * s) / 2}) scale(${s})`
@@ -139,8 +139,8 @@ const nodes = computed<GhostNode[]>(() => GHOST_GRAPH_NODES.map(n => ({ kind: n.
         stroke-width="1.5"
         :style="{ '--base': 'var(--fog)', '--lit': 'var(--pulse-deep)' }"
       />
-      <g v-if="n.kind === 'project-goal'" stroke="var(--fog)" stroke-width="1.5" stroke-linejoin="miter">
-        <polygon v-for="(s, i) in PROJECT_GOAL_GEOMETRY.stand" :key="i" :points="s" :fill="standFill[i]" />
+      <g v-if="n.kind === 'project-goal'" data-ghost="edge" stroke-width="1.5" stroke-linejoin="miter" :style="{ '--base': 'var(--fog)', '--lit': 'var(--pulse-deep)' }">
+        <polygon v-for="(s, i) in stand" :key="i" data-ghost="facet" :points="s.points" :style="{ '--base': s.base, '--lit': s.lit }" />
       </g>
     </g>
   </svg>
