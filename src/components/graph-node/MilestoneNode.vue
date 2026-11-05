@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { MilestoneStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { MILESTONE_GEOMETRY } from './geometry'
 import { PADLOCK, PADLOCK_OPEN, STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import NodeLabel from './NodeLabel.vue'
 import { STATUS_NAME, NODE_TEXT } from './types'
@@ -94,17 +95,17 @@ const name = computed(() => STATUS_NAME[props.status === 'not-started' ? 'not-st
         :aria-label="`Milestone, ${name}, ${left} days left`"
       >
         <g stroke="var(--ink)" stroke-opacity="0.18" stroke-width="1" stroke-linejoin="miter">
-          <polygon points="44,84 76,58 72,84" :fill="c.l" />
-          <polygon points="76,58 100,84 72,84" :fill="c.b" />
-          <polygon points="76,58 124,58 100,84" :fill="c.l" />
-          <polygon points="124,58 128,84 100,84" :fill="c.b" />
-          <polygon points="124,58 156,84 128,84" :fill="c.d" />
-          <polygon points="44,84 72,84 100,150" :fill="c.b" />
-          <polygon points="72,84 128,84 100,150" :fill="c.l" />
-          <polygon points="128,84 156,84 100,150" :fill="c.d" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[0]" :fill="c.l" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[1]" :fill="c.b" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[2]" :fill="c.l" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[3]" :fill="c.b" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[4]" :fill="c.d" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[5]" :fill="c.b" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[6]" :fill="c.l" />
+          <polygon :points="MILESTONE_GEOMETRY.facets[7]" :fill="c.d" />
         </g>
-        <polygon points="76,58 124,58 156,84 100,150 44,84" fill="none" :stroke="edge" :stroke-width="edgeW" stroke-linejoin="miter" />
-        <line x1="44" y1="84" x2="156" y2="84" :stroke="edge" stroke-width="1.5" />
+        <polygon :points="MILESTONE_GEOMETRY.outline" fill="none" :stroke="edge" :stroke-width="edgeW" stroke-linejoin="miter" />
+        <line :x1="MILESTONE_GEOMETRY.line.x1" :y1="MILESTONE_GEOMETRY.line.y1" :x2="MILESTONE_GEOMETRY.line.x2" :y2="MILESTONE_GEOMETRY.line.y2" :stroke="edge" stroke-width="1.5" />
       </svg>
       <span
         v-if="glyph.d"

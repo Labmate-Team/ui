@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { WorkStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { GOAL_GEOMETRY } from './geometry'
 import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import NodeLabel from './NodeLabel.vue'
 import { STATUS_NAME } from './types'
@@ -60,15 +61,15 @@ const metaLine = computed(() => props.meta
       :aria-label="`Goal, ${STATUS_NAME[status]}, ${done} of ${total} tasks`"
     >
       <g stroke="var(--ink)" stroke-opacity="0.18" stroke-width="1" stroke-linejoin="miter">
-        <polygon points="52,4 99.6,38.5 50,56" :fill="facets[0]" />
-        <polygon points="99.6,38.5 81.4,94.5 50,56" :fill="facets[1]" />
-        <polygon points="81.4,94.5 22.6,94.5 50,56" :fill="facets[2]" />
-        <polygon points="22.6,94.5 4.4,38.5 50,56" :fill="facets[3]" />
-        <polygon points="4.4,38.5 52,4 50,56" :fill="facets[4]" />
+        <polygon :points="GOAL_GEOMETRY.facets[0]" :fill="facets[0]" />
+        <polygon :points="GOAL_GEOMETRY.facets[1]" :fill="facets[1]" />
+        <polygon :points="GOAL_GEOMETRY.facets[2]" :fill="facets[2]" />
+        <polygon :points="GOAL_GEOMETRY.facets[3]" :fill="facets[3]" />
+        <polygon :points="GOAL_GEOMETRY.facets[4]" :fill="facets[4]" />
       </g>
-      <polygon points="52,4 99.6,38.5 81.4,94.5 22.6,94.5 4.4,38.5" fill="none" stroke="var(--node-edge)" stroke-width="2" stroke-linejoin="miter" />
+      <polygon :points="GOAL_GEOMETRY.outline" fill="none" stroke="var(--node-edge)" stroke-width="2" stroke-linejoin="miter" />
       <polygon
-        points="52,40 67.2,51.1 61.4,68.9 42.6,68.9 36.8,51.1"
+        :points="GOAL_GEOMETRY.inner"
         :fill="dark ? 'var(--ink)' : 'var(--paper)'"
         stroke="var(--ink)"
         stroke-width="1.5"

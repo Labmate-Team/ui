@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { TaskPriority, WorkStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { TASK_GEOMETRY } from './geometry'
 import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import NodeLabel from './NodeLabel.vue'
 import PriorityLight from './PriorityLight.vue'
@@ -48,12 +49,12 @@ const lightOn = computed(() => props.lit || props.status === 'ongoing')
         :aria-label="`Task, ${STATUS_NAME[status]}${priority && status === 'ongoing' ? `, ${priority.toUpperCase()}` : ''}`"
       >
         <g :stroke="c.d" stroke-width="0.75" stroke-linejoin="miter">
-          <polygon points="28,2 26,26 2,28" :fill="c.l" />
-          <polygon points="28,2 54,28 26,26" :fill="c.b" />
-          <polygon points="54,28 28,54 26,26" :fill="c.d" />
-          <polygon points="28,54 2,28 26,26" :fill="c.b" />
+          <polygon :points="TASK_GEOMETRY.facets[0]" :fill="c.l" />
+          <polygon :points="TASK_GEOMETRY.facets[1]" :fill="c.b" />
+          <polygon :points="TASK_GEOMETRY.facets[2]" :fill="c.d" />
+          <polygon :points="TASK_GEOMETRY.facets[3]" :fill="c.b" />
         </g>
-        <polygon points="28,2 54,28 28,54 2,28" fill="none" stroke="var(--node-edge)" stroke-width="1.5" stroke-linejoin="miter" />
+        <polygon :points="TASK_GEOMETRY.outline" fill="none" stroke="var(--node-edge)" stroke-width="1.5" stroke-linejoin="miter" />
         <g v-if="glyph.d" transform="translate(19 19) scale(0.75)">
           <path :d="glyph.d" :fill="glyph.fill ? c.g : 'none'" :stroke="c.g" stroke-width="2.6" stroke-linejoin="miter" stroke-linecap="square" />
         </g>

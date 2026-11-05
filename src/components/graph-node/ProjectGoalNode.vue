@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { ProjectGoalStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { PROJECT_GOAL_GEOMETRY } from './geometry'
 import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import NodeLabel from './NodeLabel.vue'
 import { NODE_TEXT, STATUS_NAME } from './types'
@@ -82,14 +83,14 @@ const chip = computed(() => ({
         :aria-label="`Project goal, ${STATUS_NAME[status]}, ${done} of ${total} goals`"
       >
         <g stroke="var(--ink)" stroke-opacity="0.18" stroke-width="1" stroke-linejoin="miter">
-          <polygon points="30,20 210,20 120,52" fill="var(--paper)" />
-          <polygon points="30,20 120,52 44,80" fill="var(--facet-paper)" />
-          <polygon points="210,20 196,80 120,52" fill="var(--facet-shade)" />
-          <polygon points="44,80 120,52 120,100" fill="var(--well)" />
-          <polygon points="196,80 120,52 120,100" fill="var(--well-deep)" />
-          <polygon points="44,80 120,100 90,130" fill="var(--facet-paper)" />
-          <polygon points="196,80 150,130 120,100" fill="var(--fog)" />
-          <polygon points="90,130 120,100 150,130" fill="var(--facet-mid)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[0]" fill="var(--paper)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[1]" fill="var(--facet-paper)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[2]" fill="var(--facet-shade)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[3]" fill="var(--well)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[4]" fill="var(--well-deep)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[5]" fill="var(--facet-paper)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[6]" fill="var(--fog)" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.facets[7]" fill="var(--facet-mid)" />
         </g>
         <template v-if="p > 0">
           <g stroke="var(--ink)" stroke-opacity="0.18" stroke-width="1" stroke-linejoin="miter">
@@ -99,15 +100,15 @@ const chip = computed(() => ({
           </g>
           <line :x1="liquid.xl" :y1="liquid.yl" :x2="liquid.xr" :y2="liquid.yl" stroke="var(--ink)" stroke-width="1.5" />
         </template>
-        <polygon points="30,20 210,20 196,80 150,130 90,130 44,80" fill="none" stroke="var(--node-edge)" stroke-width="2.5" stroke-linejoin="miter" />
+        <polygon :points="PROJECT_GOAL_GEOMETRY.outline" fill="none" stroke="var(--node-edge)" stroke-width="2.5" stroke-linejoin="miter" />
         <g stroke="var(--node-edge)" stroke-width="1.5" stroke-linejoin="miter">
-          <polygon points="108,130 120,130 120,200 114,200" :fill="c.l" />
-          <polygon points="120,130 132,130 126,200 120,200" :fill="c.d" />
-          <polygon points="120,148 120,182 102,165" :fill="c.l" />
-          <polygon points="120,148 138,165 120,182" :fill="c.d" />
-          <polygon points="114,200 120,200 120,240 60,240" :fill="c.l" />
-          <polygon points="120,200 126,200 180,240 120,240" :fill="c.b" />
-          <polygon points="54,240 186,240 180,256 60,256" :fill="c.d" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.stand[0]" :fill="c.l" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.stand[1]" :fill="c.d" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.stand[2]" :fill="c.l" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.stand[3]" :fill="c.d" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.stand[4]" :fill="c.l" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.stand[5]" :fill="c.b" />
+          <polygon :points="PROJECT_GOAL_GEOMETRY.stand[6]" :fill="c.d" />
         </g>
       </svg>
       <span
