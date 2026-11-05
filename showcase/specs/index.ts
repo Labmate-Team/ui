@@ -9,6 +9,7 @@ import { dialogSpec } from './dialog'
 import { dropdownMenuSpec } from './dropdown-menu'
 import { fieldSpec } from './field'
 import { goalNodeSpec, milestoneNodeSpec, projectGoalNodeSpec, startNodeSpec, taskNodeSpec } from './graph-nodes'
+import { ghostGraphSpec } from './ghost-graph'
 import { graphZoomSpec } from './graph-zoom'
 import { inputSpec } from './input'
 import { labIconSpec } from './lab-icon'
@@ -64,6 +65,7 @@ export const componentSpecs: ComponentSpec[] = [
   milestoneNodeSpec,
   projectGoalNodeSpec,
   graphZoomSpec,
+  ghostGraphSpec,
   scheduleBarSpec,
   cardSpec,
   tabsSpec,

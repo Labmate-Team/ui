@@ -702,6 +702,35 @@
   }
 }
 
+/* Ghost graph (the panel's loading graph): the tracing light is a 56px dash on the rail, pushed
+   one dash period (56 + 904) along per 3.4s cycle, so it crosses the 640px rail in ~2.5s and the
+   rail is dark for the rest. Each facet / edge flashes to its --lit tone as the light passes
+   (150ms up, 390ms back); the per-node delay is set as --d on the node group. */
+@keyframes ghost-graph-light {
+  from {
+    stroke-dashoffset: 56;
+  }
+  to {
+    stroke-dashoffset: -904;
+  }
+}
+@keyframes ghost-graph-facet {
+  0%, 16%, 100% {
+    fill: var(--base);
+  }
+  4.4% {
+    fill: var(--lit);
+  }
+}
+@keyframes ghost-graph-edge {
+  0%, 16%, 100% {
+    stroke: var(--base);
+  }
+  4.4% {
+    stroke: var(--lit);
+  }
+}
+
 /* ── Settings list ↔ detail swap (directional push-pop) ──────────────────────
  * A page-turn between the list and the detail, driven by <Transition> in
  * components/settings/SwapTransition.vue (no `mode`, so enter+leave run at
@@ -789,6 +818,37 @@
     [data-slot="skeleton"] {
       background-image: none;
       animation: none;
+    }
+  }
+
+  /* Ghost graph: facets and edges rest on their --base tone; [data-animated] runs the light and the
+     per-node flashes. Reduced motion: no flashes, and the light paths are not drawn at all. */
+  [data-slot="ghost-graph"] [data-ghost="facet"] {
+    fill: var(--base);
+  }
+  [data-slot="ghost-graph"] [data-ghost="edge"] {
+    stroke: var(--base);
+  }
+  [data-slot="ghost-graph"] [data-ghost="light"] {
+    stroke-dasharray: 56 904;
+    stroke-dashoffset: 56;
+    animation: ghost-graph-light 3.4s linear infinite;
+  }
+  [data-slot="ghost-graph"][data-animated] [data-ghost="facet"] {
+    animation: ghost-graph-facet 3.4s linear infinite;
+    animation-delay: var(--d);
+  }
+  [data-slot="ghost-graph"][data-animated] [data-ghost="edge"] {
+    animation: ghost-graph-edge 3.4s linear infinite;
+    animation-delay: var(--d);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="ghost-graph"] [data-ghost="facet"],
+    [data-slot="ghost-graph"] [data-ghost="edge"] {
+      animation: none;
+    }
+    [data-slot="ghost-graph"] [data-ghost="light"] {
+      display: none;
     }
   }
 
