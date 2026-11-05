@@ -842,9 +842,10 @@
     animation: ghost-graph-edge 3.4s linear infinite;
     animation-delay: var(--d);
   }
+  /* Same specificity as the [data-animated] rules above, or the flashes would win the cascade. */
   @media (prefers-reduced-motion: reduce) {
-    [data-slot="ghost-graph"] [data-ghost="facet"],
-    [data-slot="ghost-graph"] [data-ghost="edge"] {
+    [data-slot="ghost-graph"][data-animated] [data-ghost="facet"],
+    [data-slot="ghost-graph"][data-animated] [data-ghost="edge"] {
       animation: none;
     }
     [data-slot="ghost-graph"] [data-ghost="light"] {
