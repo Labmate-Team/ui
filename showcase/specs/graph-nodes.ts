@@ -1,6 +1,6 @@
 import type { ComponentSpec } from '../lib/spec'
 import { h } from 'vue'
-import { GoalNode, MilestoneNode, ProjectGoalNode, StartNode, TaskNode } from '#/components/graph-node'
+import { GoalNode, GRAPH_NODE_VARIANTS, MilestoneNode, ProjectGoalNode, StartNode, TaskNode } from '#/components/graph-node'
 import { WORK_STATUSES } from '#/components/status-chip'
 
 const MILESTONE_STATUSES = ['locked', 'ready', 'not-started', 'ongoing', 'completed', 'halted'] as const
@@ -15,8 +15,18 @@ export const startNodeSpec: ComponentSpec = {
     { kind: 'string', key: 'label', label: 'Label', default: 'Start' },
     { kind: 'string', key: 'meta', label: 'Meta', default: 'KICKOFF · SEP 02' },
     { kind: 'boolean', key: 'showLabel', label: 'Show label', default: true },
+    { kind: 'enum', key: 'variant', label: 'Variant', options: GRAPH_NODE_VARIANTS, default: 'default', display: 'segmented' },
+    { kind: 'boolean', key: 'level', label: 'Start of a level', default: false },
   ],
-  render: state => h(StartNode, { label: String(state.label), meta: String(state.meta), showLabel: Boolean(state.showLabel) }),
+  examples: [
+    {
+      name: 'On a sheet',
+      nameZh: '纸上的样子',
+      note: 'The sheet variant puts the label on the left at 40px; `level` is the smaller mark at the bottom of an inner sheet.',
+      render: () => [h(StartNode, { variant: 'sheet', label: 'Start', meta: 'KICKOFF' }), h(StartNode, { variant: 'sheet', level: true, label: 'Start', meta: 'OPEN · NOV 03' })],
+    },
+  ],
+  render: state => h(StartNode, { label: String(state.label), meta: String(state.meta), showLabel: Boolean(state.showLabel), variant: state.variant as never, level: Boolean(state.level) }),
 }
 
 export const taskNodeSpec: ComponentSpec = {
@@ -27,6 +37,8 @@ export const taskNodeSpec: ComponentSpec = {
   controls: [
     { kind: 'enum', key: 'status', label: 'Status', options: WORK_STATUSES, default: 'ongoing' },
     { kind: 'enum', key: 'priority', label: 'Priority', options: ['none', 'p1', 'p2', 'p3'], default: 'p1', display: 'segmented' },
+    { kind: 'enum', key: 'variant', label: 'Variant', options: GRAPH_NODE_VARIANTS, default: 'default', display: 'segmented' },
+    { kind: 'boolean', key: 'inside', label: 'Has an inside', default: false },
     { kind: 'boolean', key: 'sub', label: 'Sub-task', default: false },
     { kind: 'boolean', key: 'lit', label: 'Traced', default: false },
     { kind: 'string', key: 'label', label: 'Label', default: 'Draft intro section' },
@@ -50,10 +62,21 @@ export const taskNodeSpec: ComponentSpec = {
       note: 'A sub-item is drawn at 60% with the compact label.',
       render: () => [h(TaskNode, { status: 'ongoing', label: 'Main task', code: 'LAB-220' }), h(TaskNode, { status: 'completed', sub: true, label: 'Clean data', code: 'LAB-221' })],
     },
+    {
+      name: 'On a sheet',
+      nameZh: '纸上的样子',
+      note: 'Label on the left in a fixed box, two lines at most, 36px; `inside` adds the stacked-layers badge; `meta` replaces the code line.',
+      render: () => [
+        h(TaskNode, { variant: 'sheet', status: 'ongoing', priority: 'p1', label: 'Run the baseline on every split', meta: 'LAB-204 · ONGOING' }),
+        h(TaskNode, { variant: 'sheet', status: 'not-started', inside: true, label: 'A task that holds other tasks and has a long title that wraps and is cut', meta: 'LAB-205 · NOT STARTED' }),
+      ],
+    },
   ],
   render: state => h(TaskNode, {
     status: state.status as never,
     priority: state.priority === 'none' ? undefined : state.priority as never,
+    variant: state.variant as never,
+    inside: Boolean(state.inside),
     sub: Boolean(state.sub),
     lit: Boolean(state.lit),
     label: String(state.label),
@@ -70,6 +93,8 @@ export const goalNodeSpec: ComponentSpec = {
     { kind: 'enum', key: 'status', label: 'Status', options: WORK_STATUSES, default: 'ongoing' },
     { kind: 'number', key: 'done', label: 'Done', default: 3, min: 0, max: 50 },
     { kind: 'number', key: 'total', label: 'Total', default: 5, min: 1, max: 50 },
+    { kind: 'enum', key: 'variant', label: 'Variant', options: GRAPH_NODE_VARIANTS, default: 'default', display: 'segmented' },
+    { kind: 'boolean', key: 'inside', label: 'Has an inside', default: false },
     { kind: 'boolean', key: 'sub', label: 'Sub-goal', default: false },
     { kind: 'string', key: 'label', label: 'Label', default: 'RQ1 · Which factors drive the effect?' },
   ],
@@ -84,11 +109,18 @@ export const goalNodeSpec: ComponentSpec = {
       nameZh: '全部状态',
       render: () => WORK_STATUSES.map(status => h(GoalNode, { status, done: 3, total: 5, label: 'RQ2' })),
     },
+    {
+      name: 'On a sheet',
+      nameZh: '纸上的样子',
+      render: () => [h(GoalNode, { variant: 'sheet', inside: true, status: 'ongoing', done: 3, total: 7, label: 'RQ1 · Which factors drive the effect?', meta: '3/7 · ONGOING' })],
+    },
   ],
   render: state => h(GoalNode, {
     status: state.status as never,
     done: Number(state.done),
     total: Number(state.total),
+    variant: state.variant as never,
+    inside: Boolean(state.inside),
     sub: Boolean(state.sub),
     label: String(state.label),
   }),
@@ -106,6 +138,8 @@ export const milestoneNodeSpec: ComponentSpec = {
     { kind: 'number', key: 'reqDone', label: 'Req. done', default: 2, min: 0, max: 12 },
     { kind: 'number', key: 'reqTotal', label: 'Req. total', default: 3, min: 0, max: 12 },
     { kind: 'boolean', key: 'ring', label: 'Ring', default: true },
+    { kind: 'enum', key: 'variant', label: 'Variant', options: GRAPH_NODE_VARIANTS, default: 'default', display: 'segmented' },
+
     { kind: 'string', key: 'label', label: 'Label', default: 'Submit paper' },
     { kind: 'string', key: 'due', label: 'Due', default: 'DUE NOV 14' },
   ],
@@ -121,6 +155,16 @@ export const milestoneNodeSpec: ComponentSpec = {
         h(MilestoneNode, { status: 'completed', label: 'Submit paper', due: 'DUE NOV 14' }),
       ],
     },
+    {
+      name: 'On a sheet',
+      nameZh: '纸上的样子',
+      note: 'The gem alone at 72px: no ring, chip or pips; the host writes date, days left and requirements into `meta`.',
+      render: () => [
+        h(MilestoneNode, { variant: 'sheet', status: 'locked', label: 'Submit paper', meta: 'NOV 14 · 22 DAYS · 2/3 · LOCKED' }),
+        h(MilestoneNode, { variant: 'sheet', status: 'ready', label: 'Submit paper', meta: 'NOV 14 · 12 DAYS · READY' }),
+        h(MilestoneNode, { variant: 'sheet', status: 'completed', label: 'Submit paper', meta: 'NOV 14 · DELIVERED' }),
+      ],
+    },
   ],
   render: state => h(MilestoneNode, {
     status: state.status as never,
@@ -129,6 +173,7 @@ export const milestoneNodeSpec: ComponentSpec = {
     reqDone: Number(state.reqDone),
     reqTotal: Number(state.reqTotal),
     ring: Boolean(state.ring),
+    variant: state.variant as never,
     label: String(state.label),
     due: String(state.due),
   }),
@@ -143,6 +188,7 @@ export const projectGoalNodeSpec: ComponentSpec = {
     { kind: 'enum', key: 'status', label: 'Status', options: PROJECT_STATUSES, default: 'ongoing', display: 'segmented' },
     { kind: 'number', key: 'done', label: 'Done', default: 2, min: 0, max: 50 },
     { kind: 'number', key: 'total', label: 'Total', default: 5, min: 1, max: 50 },
+    { kind: 'enum', key: 'variant', label: 'Variant', options: GRAPH_NODE_VARIANTS, default: 'default', display: 'segmented' },
     { kind: 'string', key: 'label', label: 'Label', default: 'Map the drivers of the effect' },
   ],
   examples: [
@@ -151,11 +197,17 @@ export const projectGoalNodeSpec: ComponentSpec = {
       nameZh: '全部状态',
       render: () => PROJECT_STATUSES.map(status => h(ProjectGoalNode, { status, done: 2, total: 5, label: 'Project aim' })),
     },
+    {
+      name: 'On a sheet',
+      nameZh: '纸上的样子',
+      render: () => [h(ProjectGoalNode, { variant: 'sheet', status: 'ongoing', done: 2, total: 5, label: 'Map the drivers of the effect', meta: 'PROJECT GOAL · 2/5 GOALS' })],
+    },
   ],
   render: state => h(ProjectGoalNode, {
     status: state.status as never,
     done: Number(state.done),
     total: Number(state.total),
+    variant: state.variant as never,
     label: String(state.label),
   }),
 }

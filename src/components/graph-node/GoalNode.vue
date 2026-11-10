@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import type { WorkStatus } from './types'
+import type { GraphNodeVariant, WorkStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
 import { GOAL_GEOMETRY } from './geometry'
 import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
+import InsideBadge from './InsideBadge.vue'
 import NodeLabel from './NodeLabel.vue'
 import { STATUS_NAME } from './types'
 
 // Goal node (§8.4): a pentagon of five facets around an inner core that holds
 // the glyph, 104px. The facets light up clockwise from the top as sub-items
 // complete — the shape is its progress bar. A goal with sub-items rolls its
-// status up (§9.1); pass the rolled-up status here.
+// status up (§9.1); pass the rolled-up status here. `variant="sheet"` is the 60px form with the label on the left;
+// `inside` marks a goal that holds other nodes.
 const props = withDefaults(defineProps<{
   status?: WorkStatus
   label: string
@@ -19,10 +21,13 @@ const props = withDefaults(defineProps<{
   total?: number
   /** Overrides the default `done/total TASKS · STATUS` meta line. */
   meta?: string
+  variant?: GraphNodeVariant
+  /** Holds other nodes: draws the stacked-layers badge. */
+  inside?: boolean
   sub?: boolean
   showLabel?: boolean
   class?: HTMLAttributes['class']
-}>(), { status: 'ongoing', done: 0, total: 1, showLabel: true })
+}>(), { status: 'ongoing', done: 0, total: 1, showLabel: true, variant: 'default' })
 
 const c = computed(() => statusPlanes(props.status))
 const glyph = computed(() => STATUS_GLYPH[props.status])
@@ -38,7 +43,8 @@ const facets = computed(() => {
 })
 const dark = computed(() => props.status === 'halted')
 const ink = computed(() => (dark.value ? 'var(--paper)' : 'var(--ink)'))
-const px = computed(() => props.sub ? 62 : 104)
+const sheet = computed(() => props.variant === 'sheet')
+const px = computed(() => sheet.value ? 60 : props.sub ? 62 : 104)
 const metaLine = computed(() => props.meta
   ?? (props.sub
     ? `SUB-GOAL · ${STATUS_NAME[props.status].toUpperCase()}`
@@ -50,8 +56,11 @@ const metaLine = computed(() => props.meta
     data-slot="graph-node"
     data-kind="goal"
     :data-status="status"
-    :class="cn('inline-flex flex-col items-center gap-2.5 pt-1 text-foreground', sub ? 'w-[9.375rem]' : 'w-45', props.class)"
+    :data-variant="variant"
+    :class="cn('inline-flex items-center text-foreground', sheet ? 'flex-row gap-3' : ['flex-col gap-2.5 pt-1', sub ? 'w-[9.375rem]' : 'w-45'], props.class)"
   >
+    <NodeLabel v-if="sheet && showLabel" side="left" :title="label" :meta="metaLine" weight="goal"><slot /></NodeLabel>
+    <span class="relative inline-flex shrink-0">
     <svg
       viewBox="0 0 104 104"
       :width="px"
@@ -79,6 +88,8 @@ const metaLine = computed(() => props.meta
         <path :d="glyph.d" :fill="glyph.fill ? ink : 'none'" :stroke="ink" stroke-width="2.6" stroke-linejoin="miter" stroke-linecap="square" />
       </g>
     </svg>
-    <NodeLabel v-if="showLabel" :title="label" :meta="metaLine" :sub="sub" weight="goal" />
+      <InsideBadge v-if="inside" :size="px" />
+    </span>
+    <NodeLabel v-if="!sheet && showLabel" :title="label" :meta="metaLine" :sub="sub" weight="goal"><slot /></NodeLabel>
   </div>
 </template>
