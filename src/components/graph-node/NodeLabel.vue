@@ -2,7 +2,8 @@
 // The label of every node (§8.2): a title, then a mono meta line. Under the shape by default; `side="left"` is the
 // sheet form — a fixed 172px box to the LEFT of the shape, right-aligned, the title clamped to two lines. A sub-item
 // (§8.8) uses the compact pair — 12px title, 10px meta. The default slot sits under the meta line (host marks).
-// The host may fade labels as a group by setting `--graph-label-opacity` on an ancestor (the panel's stacked view).
+// The host may fade labels as a group by setting `--graph-label-opacity` on an ancestor (the panel's stacked view),
+// and enlarge a label against a shrunken node with `--graph-label-scale` (it grows away from the shape).
 withDefaults(defineProps<{
   title: string
   meta?: string
@@ -23,8 +24,8 @@ const titleClass = {
 <template>
   <span
     data-slot="graph-node-label"
-    class="flex flex-col gap-0.5 opacity-[var(--graph-label-opacity,1)]"
-    :class="side === 'left' ? 'w-43 shrink-0 items-end text-right' : 'max-w-full items-center text-center'"
+    class="flex flex-col gap-0.5 scale-[var(--graph-label-scale,1)] opacity-[var(--graph-label-opacity,1)]"
+    :class="side === 'left' ? 'w-43 shrink-0 origin-right items-end text-right' : 'max-w-full origin-top items-center text-center'"
   >
     <span
       v-if="side === 'left'"

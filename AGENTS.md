@@ -161,7 +161,8 @@ on the LEFT (right-aligned, the title two lines at most, then the host's
 so a host can centre a node on its shape. `inside` on a task or goal draws
 the stacked-layers badge ("holds other nodes"). The default slot of every
 node sits under the meta line, for host marks. A host fades a group of
-labels by setting `--graph-label-opacity` on an ancestor; nothing else about
+labels by setting `--graph-label-opacity` on an ancestor, and enlarges a
+label against a shrunken node with `--graph-label-scale`; nothing else about
 a node is styled from outside.
 
 **LabMate control rules (design doc controls board).**
