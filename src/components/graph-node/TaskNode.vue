@@ -12,8 +12,8 @@ import { STATUS_NAME } from './types'
 
 // Task node (§8): a diamond of four facets in its status planes, 56px; the
 // status glyph sits in the middle. Priority lights the task only while it is
-// ongoing (§10.4). A sub-task (§8.8) is drawn at 60% with the compact label. `variant="sheet"` is the 36px form with the
-// label on the left; `inside` marks a task that holds other nodes.
+// ongoing (§10.4). `variant="sheet"` is the 36px form with the label on the left; `inside` marks a task that holds
+// other nodes.
 const props = withDefaults(defineProps<{
   status?: WorkStatus
   label: string
@@ -25,7 +25,6 @@ const props = withDefaults(defineProps<{
   variant?: GraphNodeVariant
   /** Holds other nodes: draws the stacked-layers badge. */
   inside?: boolean
-  sub?: boolean
   /** Traced (§10.5) — lit regardless of priority. */
   lit?: boolean
   showLabel?: boolean
@@ -35,7 +34,7 @@ const props = withDefaults(defineProps<{
 const c = computed(() => statusPlanes(props.status))
 const glyph = computed(() => STATUS_GLYPH[props.status])
 const sheet = computed(() => props.variant === 'sheet')
-const px = computed(() => sheet.value ? 36 : props.sub ? 34 : 56)
+const px = computed(() => sheet.value ? 36 : 56)
 const lightOn = computed(() => props.lit || props.status === 'ongoing')
 </script>
 
@@ -45,11 +44,11 @@ const lightOn = computed(() => props.lit || props.status === 'ongoing')
     data-kind="task"
     :data-status="status"
     :data-variant="variant"
-    :class="cn('inline-flex items-center text-foreground', sheet ? 'flex-row gap-3' : ['flex-col gap-2 pt-1', sub ? 'w-[9.375rem]' : 'w-35'], props.class)"
+    :class="cn('inline-flex items-center text-foreground', sheet ? 'flex-row gap-3' : 'w-35 flex-col gap-2 pt-1', props.class)"
   >
     <NodeLabel v-if="sheet && showLabel" side="left" :title="label" :meta="meta ?? code" weight="task"><slot /></NodeLabel>
     <span class="relative inline-flex">
-      <PriorityLight v-if="lightOn" :radius="sheet ? 32 : sub ? 30 : 50" :priority="priority" :lit="lit" />
+      <PriorityLight v-if="lightOn" :radius="sheet ? 32 : 50" :priority="priority" :lit="lit" />
       <svg
         viewBox="0 0 56 56"
         :width="px"
@@ -71,6 +70,6 @@ const lightOn = computed(() => props.lit || props.status === 'ongoing')
       </svg>
       <InsideBadge v-if="inside" :size="px" />
     </span>
-    <NodeLabel v-if="!sheet && showLabel" :title="label" :meta="meta ?? code" :sub="sub" weight="task"><slot /></NodeLabel>
+    <NodeLabel v-if="!sheet && showLabel" :title="label" :meta="meta ?? code" weight="task"><slot /></NodeLabel>
   </div>
 </template>

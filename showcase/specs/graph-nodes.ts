@@ -39,7 +39,6 @@ export const taskNodeSpec: ComponentSpec = {
     { kind: 'enum', key: 'priority', label: 'Priority', options: ['none', 'p1', 'p2', 'p3'], default: 'p1', display: 'segmented' },
     { kind: 'enum', key: 'variant', label: 'Variant', options: GRAPH_NODE_VARIANTS, default: 'default', display: 'segmented' },
     { kind: 'boolean', key: 'inside', label: 'Has an inside', default: false },
-    { kind: 'boolean', key: 'sub', label: 'Sub-task', default: false },
     { kind: 'boolean', key: 'lit', label: 'Traced', default: false },
     { kind: 'string', key: 'label', label: 'Label', default: 'Draft intro section' },
     { kind: 'string', key: 'code', label: 'Code', default: 'LAB-201' },
@@ -57,12 +56,6 @@ export const taskNodeSpec: ComponentSpec = {
       render: () => (['p1', 'p2', 'p3'] as const).map(priority => h(TaskNode, { status: 'ongoing', priority, label: priority.toUpperCase(), code: 'LAB-210' })),
     },
     {
-      name: 'Sub-task',
-      nameZh: '子任务',
-      note: 'A sub-item is drawn at 60% with the compact label.',
-      render: () => [h(TaskNode, { status: 'ongoing', label: 'Main task', code: 'LAB-220' }), h(TaskNode, { status: 'completed', sub: true, label: 'Clean data', code: 'LAB-221' })],
-    },
-    {
       name: 'On a sheet',
       nameZh: '纸上的样子',
       note: 'Label on the left in a fixed box, two lines at most, 36px; `inside` adds the stacked-layers badge; `meta` replaces the code line.',
@@ -77,7 +70,6 @@ export const taskNodeSpec: ComponentSpec = {
     priority: state.priority === 'none' ? undefined : state.priority as never,
     variant: state.variant as never,
     inside: Boolean(state.inside),
-    sub: Boolean(state.sub),
     lit: Boolean(state.lit),
     label: String(state.label),
     code: String(state.code),
@@ -95,7 +87,6 @@ export const goalNodeSpec: ComponentSpec = {
     { kind: 'number', key: 'total', label: 'Total', default: 5, min: 1, max: 50 },
     { kind: 'enum', key: 'variant', label: 'Variant', options: GRAPH_NODE_VARIANTS, default: 'default', display: 'segmented' },
     { kind: 'boolean', key: 'inside', label: 'Has an inside', default: false },
-    { kind: 'boolean', key: 'sub', label: 'Sub-goal', default: false },
     { kind: 'string', key: 'label', label: 'Label', default: 'RQ1 · Which factors drive the effect?' },
   ],
   examples: [
@@ -121,7 +112,6 @@ export const goalNodeSpec: ComponentSpec = {
     total: Number(state.total),
     variant: state.variant as never,
     inside: Boolean(state.inside),
-    sub: Boolean(state.sub),
     label: String(state.label),
   }),
 }

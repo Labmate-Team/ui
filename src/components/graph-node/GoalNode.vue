@@ -24,7 +24,6 @@ const props = withDefaults(defineProps<{
   variant?: GraphNodeVariant
   /** Holds other nodes: draws the stacked-layers badge. */
   inside?: boolean
-  sub?: boolean
   showLabel?: boolean
   class?: HTMLAttributes['class']
 }>(), { status: 'ongoing', done: 0, total: 1, showLabel: true, variant: 'default' })
@@ -44,11 +43,8 @@ const facets = computed(() => {
 const dark = computed(() => props.status === 'halted')
 const ink = computed(() => (dark.value ? 'var(--paper)' : 'var(--ink)'))
 const sheet = computed(() => props.variant === 'sheet')
-const px = computed(() => sheet.value ? 60 : props.sub ? 62 : 104)
-const metaLine = computed(() => props.meta
-  ?? (props.sub
-    ? `SUB-GOAL · ${STATUS_NAME[props.status].toUpperCase()}`
-    : `${done.value}/${total.value} TASKS · ${STATUS_NAME[props.status].toUpperCase()}`))
+const px = computed(() => sheet.value ? 60 : 104)
+const metaLine = computed(() => props.meta ?? `${done.value}/${total.value} TASKS · ${STATUS_NAME[props.status].toUpperCase()}`)
 </script>
 
 <template>
@@ -57,7 +53,7 @@ const metaLine = computed(() => props.meta
     data-kind="goal"
     :data-status="status"
     :data-variant="variant"
-    :class="cn('inline-flex items-center text-foreground', sheet ? 'flex-row gap-3' : ['flex-col gap-2.5 pt-1', sub ? 'w-[9.375rem]' : 'w-45'], props.class)"
+    :class="cn('inline-flex items-center text-foreground', sheet ? 'flex-row gap-3' : 'w-45 flex-col gap-2.5 pt-1', props.class)"
   >
     <NodeLabel v-if="sheet && showLabel" side="left" :title="label" :meta="metaLine" weight="goal"><slot /></NodeLabel>
     <span class="relative inline-flex shrink-0">
@@ -90,6 +86,6 @@ const metaLine = computed(() => props.meta
     </svg>
       <InsideBadge v-if="inside" :size="px" />
     </span>
-    <NodeLabel v-if="!sheet && showLabel" :title="label" :meta="metaLine" :sub="sub" weight="goal"><slot /></NodeLabel>
+    <NodeLabel v-if="!sheet && showLabel" :title="label" :meta="metaLine" weight="goal"><slot /></NodeLabel>
   </div>
 </template>

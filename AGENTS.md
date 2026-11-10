@@ -147,7 +147,7 @@ The library owns the LabMate primitives — `StatusChip` / `StatusGlyph`,
 `SegmentedProgress`, `PhaseTrack`, `SectionLabel`, `IconTile` — and the five
 progress-graph nodes: `StartNode`, `TaskNode` (+ `PriorityLight`), `GoalNode`,
 `MilestoneNode`, `ProjectGoalNode`. The nodes are ports of the design doc's
-node templates (same 56 / 104 / 200 / 240 / 72 geometry, sub-items at 60%),
+node templates (same 56 / 104 / 200 / 240 / 72 geometry),
 with every colour on a token. The graph canvas itself (layout, lines,
 tracing, mist, editing) stays in the LabMate app.
 

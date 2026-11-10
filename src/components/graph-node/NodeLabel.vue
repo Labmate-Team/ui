@@ -1,13 +1,12 @@
 <script setup lang="ts">
 // The label of every node (§8.2): a title, then a mono meta line. Under the shape by default; `side="left"` is the
-// sheet form — a fixed 172px box to the LEFT of the shape, right-aligned, the title clamped to two lines. A sub-item
-// (§8.8) uses the compact pair — 12px title, 10px meta. The default slot sits under the meta line (host marks).
+// sheet form — a fixed 172px box to the LEFT of the shape, right-aligned, the title and the meta line clamped to two
+// lines each. The default slot sits under the meta line (host marks).
 // The host may fade labels as a group by setting `--graph-label-opacity` on an ancestor (the panel's stacked view),
 // and enlarge a label against a shrunken node with `--graph-label-scale` (it grows away from the shape).
 withDefaults(defineProps<{
   title: string
   meta?: string
-  sub?: boolean
   side?: 'bottom' | 'left'
   /** Title rung for main nodes; larger kinds carry a heavier title. */
   weight?: 'task' | 'goal' | 'milestone' | 'project'
@@ -32,11 +31,11 @@ const titleClass = {
       class="line-clamp-2 max-w-full text-[0.8125rem] leading-tight wrap-anywhere"
       :class="weight === 'task' ? 'font-medium' : 'font-semibold'"
     >{{ title }}</span>
-    <span v-else :class="sub ? 'text-caption font-semibold leading-tight' : titleClass[weight]">{{ title }}</span>
+    <span v-else :class="titleClass[weight]">{{ title }}</span>
     <span
       v-if="meta"
       class="font-mono tracking-[0.06em] text-subtle-foreground"
-      :class="side === 'left' ? 'line-clamp-2 max-w-full text-[0.625rem] wrap-anywhere' : sub ? 'text-[0.625rem]' : 'text-[0.6875rem]'"
+      :class="side === 'left' ? 'line-clamp-2 max-w-full text-[0.625rem] wrap-anywhere' : 'text-[0.6875rem]'"
     >{{ meta }}</span>
     <slot />
   </span>
