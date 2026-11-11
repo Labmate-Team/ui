@@ -1,13 +1,17 @@
 <script setup lang="ts">
-// The label under every node (§8.2): a title, then a mono meta line. A sub-item
-// (§8.8) uses the compact pair — 12px title, 10px meta.
+// The label of every node (§8.2): a title, then a mono meta line. Under the shape by default; `side="left"` is the
+// sheet form — a box to the LEFT of the shape, right-aligned, the title and the meta line clamped to two lines each.
+// The box is 172px wide unless the host sets `--graph-label-width` on an ancestor (the panel fits it to the text).
+// A two-line title breaks evenly (`text-balance`): a box fitted to the even split would otherwise leave one word alone. The default slot sits under the meta line (host marks).
+// The host may fade labels as a group by setting `--graph-label-opacity` on an ancestor (the panel's stacked view),
+// and enlarge a label against a shrunken node with `--graph-label-scale` (it grows away from the shape).
 withDefaults(defineProps<{
   title: string
   meta?: string
-  sub?: boolean
+  side?: 'bottom' | 'left'
   /** Title rung for main nodes; larger kinds carry a heavier title. */
   weight?: 'task' | 'goal' | 'milestone' | 'project'
-}>(), { weight: 'task' })
+}>(), { weight: 'task', side: 'bottom' })
 
 const titleClass = {
   task: 'text-[0.8125rem] font-semibold leading-tight',
@@ -18,12 +22,22 @@ const titleClass = {
 </script>
 
 <template>
-  <span data-slot="graph-node-label" class="flex max-w-full flex-col items-center gap-0.5 text-center">
-    <span :class="sub ? 'text-caption font-semibold leading-tight' : titleClass[weight]">{{ title }}</span>
+  <span
+    data-slot="graph-node-label"
+    class="flex flex-col gap-0.5 scale-[var(--graph-label-scale,1)] opacity-[var(--graph-label-opacity,1)]"
+    :class="side === 'left' ? 'w-[var(--graph-label-width,10.75rem)] shrink-0 origin-right items-end text-right' : 'max-w-full origin-top items-center text-center'"
+  >
+    <span
+      v-if="side === 'left'"
+      class="line-clamp-2 max-w-full text-[0.8125rem] leading-tight text-balance wrap-anywhere"
+      :class="weight === 'task' ? 'font-medium' : 'font-semibold'"
+    >{{ title }}</span>
+    <span v-else :class="titleClass[weight]">{{ title }}</span>
     <span
       v-if="meta"
       class="font-mono tracking-[0.06em] text-subtle-foreground"
-      :class="sub ? 'text-[0.625rem]' : 'text-[0.6875rem]'"
+      :class="side === 'left' ? 'line-clamp-2 max-w-full text-[0.625rem] wrap-anywhere' : 'text-[0.6875rem]'"
     >{{ meta }}</span>
+    <slot />
   </span>
 </template>

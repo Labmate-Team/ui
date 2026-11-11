@@ -1,33 +1,40 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import type { TaskPriority, WorkStatus } from './types'
+import type { GraphNodeVariant, TaskPriority, WorkStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
 import { TASK_GEOMETRY } from './geometry'
 import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
+import InsideBadge from './InsideBadge.vue'
 import NodeLabel from './NodeLabel.vue'
 import PriorityLight from './PriorityLight.vue'
 import { STATUS_NAME } from './types'
 
 // Task node (§8): a diamond of four facets in its status planes, 56px; the
 // status glyph sits in the middle. Priority lights the task only while it is
-// ongoing (§10.4). A sub-task (§8.8) is drawn at 60% with the compact label.
+// ongoing (§10.4). `variant="sheet"` is the 36px form with the label on the left; `inside` marks a task that holds
+// other nodes.
 const props = withDefaults(defineProps<{
   status?: WorkStatus
   label: string
   /** Task ID, written LAB-nnn (§4.1). */
   code?: string
+  /** Replaces the code as the meta line (the sheet form writes `code · status` here). */
+  meta?: string
   priority?: TaskPriority
-  sub?: boolean
+  variant?: GraphNodeVariant
+  /** Holds other nodes: draws the stacked-layers badge. */
+  inside?: boolean
   /** Traced (§10.5) — lit regardless of priority. */
   lit?: boolean
   showLabel?: boolean
   class?: HTMLAttributes['class']
-}>(), { status: 'ongoing', showLabel: true })
+}>(), { status: 'ongoing', showLabel: true, variant: 'default' })
 
 const c = computed(() => statusPlanes(props.status))
 const glyph = computed(() => STATUS_GLYPH[props.status])
-const px = computed(() => props.sub ? 34 : 56)
+const sheet = computed(() => props.variant === 'sheet')
+const px = computed(() => sheet.value ? 36 : 56)
 const lightOn = computed(() => props.lit || props.status === 'ongoing')
 </script>
 
@@ -36,10 +43,12 @@ const lightOn = computed(() => props.lit || props.status === 'ongoing')
     data-slot="graph-node"
     data-kind="task"
     :data-status="status"
-    :class="cn('inline-flex flex-col items-center gap-2 pt-1 text-foreground', sub ? 'w-[9.375rem]' : 'w-35', props.class)"
+    :data-variant="variant"
+    :class="cn('inline-flex items-center text-foreground', sheet ? 'flex-row gap-3' : 'w-35 flex-col gap-2 pt-1', props.class)"
   >
+    <NodeLabel v-if="sheet && showLabel" side="left" :title="label" :meta="meta ?? code" weight="task"><slot /></NodeLabel>
     <span class="relative inline-flex">
-      <PriorityLight v-if="lightOn" :radius="sub ? 30 : 50" :priority="priority" :lit="lit" />
+      <PriorityLight v-if="lightOn" :radius="sheet ? 32 : 50" :priority="priority" :lit="lit" />
       <svg
         viewBox="0 0 56 56"
         :width="px"
@@ -59,7 +68,8 @@ const lightOn = computed(() => props.lit || props.status === 'ongoing')
           <path :d="glyph.d" :fill="glyph.fill ? c.g : 'none'" :stroke="c.g" stroke-width="2.6" stroke-linejoin="miter" stroke-linecap="square" />
         </g>
       </svg>
+      <InsideBadge v-if="inside" :size="px" />
     </span>
-    <NodeLabel v-if="showLabel" :title="label" :meta="code" :sub="sub" weight="task" />
+    <NodeLabel v-if="!sheet && showLabel" :title="label" :meta="meta ?? code" weight="task"><slot /></NodeLabel>
   </div>
 </template>

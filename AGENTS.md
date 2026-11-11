@@ -147,9 +147,23 @@ The library owns the LabMate primitives — `StatusChip` / `StatusGlyph`,
 `SegmentedProgress`, `PhaseTrack`, `SectionLabel`, `IconTile` — and the five
 progress-graph nodes: `StartNode`, `TaskNode` (+ `PriorityLight`), `GoalNode`,
 `MilestoneNode`, `ProjectGoalNode`. The nodes are ports of the design doc's
-node templates (same 56 / 104 / 200 / 240 / 72 geometry, sub-items at 60%),
+node templates (same 56 / 104 / 200 / 240 / 72 geometry),
 with every colour on a token. The graph canvas itself (layout, lines,
 tracing, mist, editing) stays in the LabMate app.
+
+Each node has two forms, picked with `variant` (`GRAPH_NODE_VARIANTS`):
+`default` is the full-size shape with its label underneath; `sheet` is the
+form on a level's sheet in the LabMate panel — the label in a box (172px, or `--graph-label-width` set by the host)
+on the LEFT (right-aligned, the title two lines at most, then the host's
+`meta` line, also two lines at most), beside a smaller shape (task 36, goal
+60, milestone 72 with no ring, chip or pips, project goal 104, Start 40, and
+30 for the Start of a level via `level`). `SHEET_NODE_BOX` gives those boxes
+so a host can centre a node on its shape. `inside` on a task or goal draws
+the stacked-layers badge ("holds other nodes"). The default slot of every
+node sits under the meta line, for host marks. A host fades a group of
+labels by setting `--graph-label-opacity` on an ancestor, and enlarges a
+label against a shrunken node with `--graph-label-scale`; nothing else about
+a node is styled from outside.
 
 **LabMate control rules (design doc controls board).**
 - Fields are framed in Ink at rest (`--field-edge-rest` = `--border-hairline`);

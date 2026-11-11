@@ -33,6 +33,8 @@ export const LAB_ICONS = {
   minus: 'M4 12h16',
   fit: 'M3 8V3h5 M16 3h5v5 M21 16v5h-5 M8 21H3v-5',
   focus: 'M9.5 6h5L18 9.5v5L14.5 18h-5L6 14.5v-5z M12 2v4 M12 18v4 M2 12h4 M18 12h4',
+  // Stacked sheets: the levels of the graph (the panel's stacked view, and "has an inside").
+  layers: 'M12 3l9 4.5-9 4.5-9-4.5z M3 12l9 4.5 9-4.5 M3 16.5l9 4.5 9-4.5',
 } as const
 
 export type LabIconName = keyof typeof LAB_ICONS

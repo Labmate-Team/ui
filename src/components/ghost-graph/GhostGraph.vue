@@ -3,7 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import { computed, useId } from 'vue'
 import { cn } from '#/lib/utils'
 import { GOAL_GEOMETRY, MILESTONE_GEOMETRY, NODE_VIEWBOX, PROJECT_GOAL_GEOMETRY, START_GEOMETRY, TASK_GEOMETRY } from '../graph-node/geometry'
-import { GHOST_GRAPH_NODES, GHOST_GRAPH_SIZE, type GhostGraphNodeKind } from './nodes'
+import { GHOST_GRAPH_NODES, GHOST_GRAPH_SIZE, GHOST_GRAPH_VERTICAL_NODES, GHOST_GRAPH_VERTICAL_SIZE, type GhostGraphNodeKind, type GhostGraphOrientation } from './nodes'
 
 // Ghost graph (labmate panel loading, design 2026-11-05 §4.2): Start → task → goal → milestone → project goal in their
 // NOT-STARTED planes (Paper / Well / Well-deep, Fog edge; Start keeps its Ink and Pulse planes) on one Ash rail, the same
@@ -11,13 +11,25 @@ import { GHOST_GRAPH_NODES, GHOST_GRAPH_SIZE, type GhostGraphNodeKind } from './
 // rail in ~2.5s of a 3.4s cycle, and each node lights up as the bead passes its centre (150ms up, 390ms back). The
 // keyframes live in style.css under [data-slot="ghost-graph"]; reduced motion freezes it to the still graph. `animated:
 // false` is the same drawing without the light (the panel's Graph skeleton). The caller gives the status text.
+// `orientation="vertical"` stands the same five nodes on a vertical rail, Start at the bottom and the project goal at the
+// top, at their sheet sizes — the shape of the panel's level sheets, whose labels sit on the left.
 const props = withDefaults(defineProps<{
   animated?: boolean
+  orientation?: GhostGraphOrientation
   class?: HTMLAttributes['class']
-}>(), { animated: true })
+}>(), { animated: true, orientation: 'horizontal' })
+
+const vertical = computed(() => props.orientation === 'vertical')
 
 const bloomId = `ghost-graph-bloom-${useId()}`
-const rail = `M${GHOST_GRAPH_NODES[0]!.x} ${GHOST_GRAPH_SIZE.rail}H${GHOST_GRAPH_NODES[GHOST_GRAPH_NODES.length - 1]!.x}`
+const size = computed(() => (vertical.value ? GHOST_GRAPH_VERTICAL_SIZE : GHOST_GRAPH_SIZE))
+const rail = computed(() => vertical.value
+  ? `M${GHOST_GRAPH_VERTICAL_SIZE.rail} ${GHOST_GRAPH_VERTICAL_NODES[0]!.y}V${GHOST_GRAPH_VERTICAL_NODES[GHOST_GRAPH_VERTICAL_NODES.length - 1]!.y}`
+  : `M${GHOST_GRAPH_NODES[0]!.x} ${GHOST_GRAPH_SIZE.rail}H${GHOST_GRAPH_NODES[GHOST_GRAPH_NODES.length - 1]!.x}`)
+/** The bloom's filter region (user space) around the rail. */
+const bloom = computed(() => vertical.value
+  ? { x: GHOST_GRAPH_VERTICAL_SIZE.rail - 40, y: 70, width: 80, height: 590 }
+  : { x: 40, y: 90, width: 720, height: 80 })
 
 type Role = 'l' | 'b' | 'd'
 /** Not-started planes by role (light / base / deep) and what they turn into under the light. */
@@ -36,22 +48,24 @@ const BOWL = [
 /** The stand (stem, knop, foot) lights with the bowl: the whole node glows as the light passes, like every other node. */
 const stand = byRole(PROJECT_GOAL_GEOMETRY.stand, ['l', 'd', 'l', 'd', 'l', 'b', 'd'])
 
-/** Place a node's viewBox box (w × h at scale s) centred on (x, rail). */
-const place = (x: number, w: number, h: number, s: number) => `translate(${x - (w * s) / 2} ${GHOST_GRAPH_SIZE.rail - (h * s) / 2}) scale(${s})`
+/** Place a node's viewBox box (w × h at scale s) centred on (x, y). */
+const place = (x: number, y: number, w: number, h: number, s: number) => `translate(${x - (w * s) / 2} ${y - (h * s) / 2}) scale(${s})`
 
 interface GhostNode {
   kind: GhostGraphNodeKind
   delay: number
   transform: string
+  /** The viewBox box and the scale it is drawn at on the horizontal rail. */
+  box: { w: number, h: number, s: number }
   seam: { stroke: string, opacity: number, width: number }
   facets: { points: string, base: string, lit: string }[]
   outline: string
   edge: { base: string, width: number }
 }
 
-const SHAPE: Record<GhostGraphNodeKind, (x: number) => Omit<GhostNode, 'kind' | 'delay'>> = {
-  'start': x => ({
-    transform: place(x, NODE_VIEWBOX.start, NODE_VIEWBOX.start, 1),
+const SHAPE: Record<GhostGraphNodeKind, Omit<GhostNode, 'kind' | 'delay' | 'transform'>> = {
+  'start': {
+    box: { w: NODE_VIEWBOX.start, h: NODE_VIEWBOX.start, s: 1 },
     seam: { stroke: 'var(--ink)', opacity: 0.25, width: 1 },
     // Start is not a status node: Graphite / Ink / Slate stay put, only its Pulse plane brightens as the light leaves.
     facets: [
@@ -62,52 +76,59 @@ const SHAPE: Record<GhostGraphNodeKind, (x: number) => Omit<GhostNode, 'kind' | 
     ],
     outline: START_GEOMETRY.outline,
     edge: { base: 'var(--ink)', width: 2 },
-  }),
-  'task': x => ({
-    transform: place(x, NODE_VIEWBOX.task, NODE_VIEWBOX.task, 1),
+  },
+  'task': {
+    box: { w: NODE_VIEWBOX.task, h: NODE_VIEWBOX.task, s: 1 },
     seam: { stroke: 'var(--well-deep)', opacity: 1, width: 0.75 },
     facets: byRole(TASK_GEOMETRY.facets, ['l', 'b', 'd', 'b']),
     outline: TASK_GEOMETRY.outline,
     edge: { base: 'var(--fog)', width: 1.5 },
-  }),
-  'goal': x => ({
-    transform: place(x, NODE_VIEWBOX.goal, NODE_VIEWBOX.goal, 0.692),
+  },
+  'goal': {
+    box: { w: NODE_VIEWBOX.goal, h: NODE_VIEWBOX.goal, s: 0.692 },
     seam: { stroke: 'var(--ink)', opacity: 0.18, width: 1 },
     facets: byRole(GOAL_GEOMETRY.facets, ['b', 'd', 'd', 'b', 'l']),
     outline: GOAL_GEOMETRY.outline,
     edge: { base: 'var(--fog)', width: 2 },
-  }),
-  'milestone': x => ({
-    transform: place(x, NODE_VIEWBOX.milestone, NODE_VIEWBOX.milestone, 0.7),
+  },
+  'milestone': {
+    box: { w: NODE_VIEWBOX.milestone, h: NODE_VIEWBOX.milestone, s: 0.7 },
     seam: { stroke: 'var(--ink)', opacity: 0.18, width: 1 },
     facets: byRole(MILESTONE_GEOMETRY.facets, ['l', 'b', 'l', 'b', 'd', 'b', 'l', 'd']),
     outline: MILESTONE_GEOMETRY.outline,
     edge: { base: 'var(--fog)', width: 2 },
-  }),
-  'project-goal': x => ({
-    transform: place(x, NODE_VIEWBOX.projectGoal.w, NODE_VIEWBOX.projectGoal.h, 0.5),
+  },
+  'project-goal': {
+    box: { w: NODE_VIEWBOX.projectGoal.w, h: NODE_VIEWBOX.projectGoal.h, s: 0.5 },
     seam: { stroke: 'var(--ink)', opacity: 0.18, width: 1 },
     facets: PROJECT_GOAL_GEOMETRY.facets.map((p, i) => ({ points: p, base: BOWL[i]![0], lit: TONE[BOWL[i]![1]].lit })),
     outline: PROJECT_GOAL_GEOMETRY.outline,
     edge: { base: 'var(--fog)', width: 2.5 },
-  }),
+  },
 }
 
-const nodes = computed<GhostNode[]>(() => GHOST_GRAPH_NODES.map(n => ({ kind: n.kind, delay: n.delay, ...SHAPE[n.kind](n.x) })))
+const nodes = computed<GhostNode[]>(() => (vertical.value
+  ? GHOST_GRAPH_VERTICAL_NODES.map(n => ({ at: [GHOST_GRAPH_VERTICAL_SIZE.rail, n.y, n.scale] as const, n }))
+  : GHOST_GRAPH_NODES.map(n => ({ at: [n.x, GHOST_GRAPH_SIZE.rail, SHAPE[n.kind].box.s] as const, n }))
+).map(({ at, n }) => {
+  const shape = SHAPE[n.kind]
+  return { kind: n.kind, delay: n.delay, ...shape, transform: place(at[0], at[1], shape.box.w, shape.box.h, at[2]) }
+}))
 </script>
 
 <template>
   <svg
     data-slot="ghost-graph"
     :data-animated="props.animated ? '' : undefined"
-    :viewBox="`0 0 ${GHOST_GRAPH_SIZE.width} ${GHOST_GRAPH_SIZE.height}`"
-    :class="cn('block w-full max-w-200', props.class)"
+    :data-orientation="props.orientation"
+    :viewBox="`0 0 ${size.width} ${size.height}`"
+    :class="cn('block w-full', vertical ? 'max-w-100' : 'max-w-200', props.class)"
     aria-hidden="true"
   >
-    <!-- The bloom's filter region must be user-space: a horizontal line has a zero-height bounding box, so a
-         percentage region would clip the blur away entirely. -->
+    <!-- The bloom's filter region must be user-space: a straight rail has a zero-height (or zero-width) bounding box,
+         so a percentage region would clip the blur away entirely. -->
     <defs v-if="props.animated">
-      <filter :id="bloomId" filterUnits="userSpaceOnUse" x="40" y="90" width="720" height="80">
+      <filter :id="bloomId" filterUnits="userSpaceOnUse" :x="bloom.x" :y="bloom.y" :width="bloom.width" :height="bloom.height">
         <feGaussianBlur stdDeviation="5" />
       </filter>
     </defs>

@@ -10,6 +10,16 @@ export type ProjectGoalStatus = 'not-started' | 'ongoing' | 'completed' | 'halte
 export type TaskPriority = 'p1' | 'p2' | 'p3'
 export type { WorkStatus }
 
+/**
+ * How a node is drawn. `default`: the full-size shape with its label underneath (§8). `sheet`: the form used on a
+ * level's sheet in the labmate panel — the label in a box on the LEFT (172px, or `--graph-label-width` from the host) of a smaller shape (task 36, goal 60,
+ * milestone 72 without its ring, project goal 104, Start 40), two title lines at most, then the host's meta line.
+ */
+export const GRAPH_NODE_VARIANTS = ['default', 'sheet'] as const
+export type GraphNodeVariant = typeof GRAPH_NODE_VARIANTS[number]
+/** The drawn box of each shape in the sheet form (px); hosts centre a node on its shape with these. `mark` is the Start of a level. */
+export const SHEET_NODE_BOX = { start: 40, mark: 30, task: 36, goal: 60, milestone: 72, projectGoal: { w: 92, h: 104 } } as const
+
 export const STATUS_NAME: Record<WorkStatus | 'locked' | 'ready', string> = {
   'not-started': 'Not started',
   'ongoing': 'Ongoing',

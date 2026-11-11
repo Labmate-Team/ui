@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import type { MilestoneStatus } from './types'
+import type { GraphNodeVariant, MilestoneStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
 import { MILESTONE_GEOMETRY } from './geometry'
@@ -13,7 +13,8 @@ import { STATUS_NAME, NODE_TEXT } from './types'
 // Spark when ≤ 7 days are left — and closes in the status colour once the
 // milestone ends. It starts LOCKED (grey planes, Ash edge, padlock, pips
 // counting the requirements done) and becomes READY when they are all done
-// (Pulse-deep 4px edge, open padlock, READY TO UNLOCK).
+// (Pulse-deep 4px edge, open padlock, READY TO UNLOCK). `variant="sheet"` is the gem alone at 72px with the label on
+// the left: no ring, chip or pips — the host writes the date, days left and requirements into `meta`.
 const props = withDefaults(defineProps<{
   status?: MilestoneStatus
   label: string
@@ -26,8 +27,15 @@ const props = withDefaults(defineProps<{
   reqTotal?: number
   /** The countdown ring is optional (§8.54). */
   ring?: boolean
+  variant?: GraphNodeVariant
+  /** The meta line of the sheet form (falls back to `due`). */
+  meta?: string
   class?: HTMLAttributes['class']
-}>(), { status: 'locked', daysLeft: 0, totalDays: 30, reqDone: 0, reqTotal: 0, ring: true })
+}>(), { status: 'locked', daysLeft: 0, totalDays: 30, reqDone: 0, reqTotal: 0, ring: true, variant: 'default' })
+
+const sheet = computed(() => props.variant === 'sheet')
+// Sheet form: the 200px drawing scaled to 60% and cropped to the 120px square around the gem (centre 100, 104).
+const SHEET_CROP = { position: 'absolute', left: '-24px', top: '-26.4px', scale: '0.6', transformOrigin: 'top left' } as const
 
 const pre = computed(() => props.status === 'locked' || props.status === 'ready')
 const c = computed(() => statusPlanes(pre.value ? 'locked' : props.status as Exclude<MilestoneStatus, 'locked' | 'ready'>))
@@ -74,10 +82,13 @@ const name = computed(() => STATUS_NAME[props.status === 'not-started' ? 'not-st
     data-slot="graph-node"
     data-kind="milestone"
     :data-status="status"
-    :class="cn('inline-flex w-55 flex-col items-center gap-2.5 pt-1 text-foreground', props.class)"
+    :data-variant="variant"
+    :class="cn('inline-flex items-center text-foreground', sheet ? 'flex-row gap-3' : 'w-55 flex-col gap-2.5 pt-1', props.class)"
   >
-    <div class="relative size-50 shrink-0">
-      <template v-if="ring">
+    <NodeLabel v-if="sheet" side="left" :title="label" :meta="meta ?? due" weight="milestone"><slot /></NodeLabel>
+    <div :class="sheet ? 'relative size-18 shrink-0 overflow-hidden' : 'contents'">
+    <div class="relative size-50 shrink-0" :style="sheet ? SHEET_CROP : undefined">
+      <template v-if="ring && !sheet">
         <span
           v-for="(sg, i) in segments"
           :key="i"
@@ -117,8 +128,9 @@ const name = computed(() => STATUS_NAME[props.status === 'not-started' ? 'not-st
         </svg>
       </span>
     </div>
-    <div class="flex max-w-full flex-col items-center gap-1.5">
-      <NodeLabel :title="label" :meta="due" weight="milestone" />
+    </div>
+    <div v-if="!sheet" class="flex max-w-full flex-col items-center gap-1.5">
+      <NodeLabel :title="label" :meta="due" weight="milestone"><slot /></NodeLabel>
       <span
         data-slot="graph-node-chip"
         class="inline-flex h-6 items-center border-(length:--stroke) px-2 font-mono text-[0.625rem] font-medium tracking-[0.08em]"
