@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // The label of every node (§8.2): a title, then a mono meta line. Under the shape by default; `side="left"` is the
-// sheet form — a fixed 172px box to the LEFT of the shape, right-aligned, the title and the meta line clamped to two
-// lines each. The default slot sits under the meta line (host marks).
+// sheet form — a box to the LEFT of the shape, right-aligned, the title and the meta line clamped to two lines each.
+// The box is 172px wide unless the host sets `--graph-label-width` on an ancestor (the panel fits it to the text).
+// A two-line title breaks evenly (`text-balance`): a box fitted to the even split would otherwise leave one word alone. The default slot sits under the meta line (host marks).
 // The host may fade labels as a group by setting `--graph-label-opacity` on an ancestor (the panel's stacked view),
 // and enlarge a label against a shrunken node with `--graph-label-scale` (it grows away from the shape).
 withDefaults(defineProps<{
@@ -24,11 +25,11 @@ const titleClass = {
   <span
     data-slot="graph-node-label"
     class="flex flex-col gap-0.5 scale-[var(--graph-label-scale,1)] opacity-[var(--graph-label-opacity,1)]"
-    :class="side === 'left' ? 'w-43 shrink-0 origin-right items-end text-right' : 'max-w-full origin-top items-center text-center'"
+    :class="side === 'left' ? 'w-[var(--graph-label-width,10.75rem)] shrink-0 origin-right items-end text-right' : 'max-w-full origin-top items-center text-center'"
   >
     <span
       v-if="side === 'left'"
-      class="line-clamp-2 max-w-full text-[0.8125rem] leading-tight wrap-anywhere"
+      class="line-clamp-2 max-w-full text-[0.8125rem] leading-tight text-balance wrap-anywhere"
       :class="weight === 'task' ? 'font-medium' : 'font-semibold'"
     >{{ title }}</span>
     <span v-else :class="titleClass[weight]">{{ title }}</span>

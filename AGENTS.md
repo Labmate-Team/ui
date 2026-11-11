@@ -153,7 +153,7 @@ tracing, mist, editing) stays in the LabMate app.
 
 Each node has two forms, picked with `variant` (`GRAPH_NODE_VARIANTS`):
 `default` is the full-size shape with its label underneath; `sheet` is the
-form on a level's sheet in the LabMate panel — the label in a fixed 172px box
+form on a level's sheet in the LabMate panel — the label in a box (172px, or `--graph-label-width` set by the host)
 on the LEFT (right-aligned, the title two lines at most, then the host's
 `meta` line, also two lines at most), beside a smaller shape (task 36, goal
 60, milestone 72 with no ring, chip or pips, project goal 104, Start 40, and

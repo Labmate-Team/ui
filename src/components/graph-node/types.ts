@@ -12,7 +12,7 @@ export type { WorkStatus }
 
 /**
  * How a node is drawn. `default`: the full-size shape with its label underneath (§8). `sheet`: the form used on a
- * level's sheet in the labmate panel — the label in a fixed 172px box on the LEFT of a smaller shape (task 36, goal 60,
+ * level's sheet in the labmate panel — the label in a box on the LEFT (172px, or `--graph-label-width` from the host) of a smaller shape (task 36, goal 60,
  * milestone 72 without its ring, project goal 104, Start 40), two title lines at most, then the host's meta line.
  */
 export const GRAPH_NODE_VARIANTS = ['default', 'sheet'] as const
