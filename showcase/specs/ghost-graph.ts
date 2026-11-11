@@ -18,11 +18,12 @@ export const ghostGraphSpec: ComponentSpec = {
       name: 'Vertical',
       nameZh: '竖着',
       note: 'Start at the bottom, the project goal at the top, at the sheet sizes: the shape of the panel\'s level sheets. `GHOST_GRAPH_VERTICAL_NODES` gives each node\'s centre and left edge for label skeletons on the left.',
-      render: () => h('div', { class: 'bg-[var(--mist)] p-6' }, [h(GhostGraph, { animated: false, orientation: 'vertical', class: 'max-w-60' })]),
+      render: () => h('div', { class: 'flex justify-center bg-[var(--mist)] p-6' }, [h(GhostGraph, { animated: false, orientation: 'vertical', class: 'max-w-60' })]),
     },
   ],
-  // The panel always shows it on the graph canvas (Mist, R §3.1), where the Paper facets read; the stage repeats that.
-  render: state => h('div', { class: 'bg-[var(--mist)] p-6' }, [h(GhostGraph, { animated: Boolean(state.animated), orientation: state.orientation as never, class: state.orientation === 'vertical' ? 'max-w-80' : undefined })]),
+  // The panel always shows it on the graph canvas (Mist, R §3.1), where the Paper facets read; the stage repeats that,
+  // and centres it the way the panel does (the vertical graph is narrower than the stage).
+  render: state => h('div', { class: 'flex justify-center bg-[var(--mist)] p-6' }, [h(GhostGraph, { animated: Boolean(state.animated), orientation: state.orientation as never, class: state.orientation === 'vertical' ? 'max-w-80' : undefined })]),
   usage: `Put it on the Mist canvas the graph itself uses and give the status text yourself (the svg is aria-hidden): the labmate panel centres it with「正在读取项目」under it while a project loads, and uses \`animated: false\` with label skeletons under the nodes (\`GHOST_GRAPH_NODES\` has each node's centre x and bottom y) while the Graph view waits for its data.`,
   usageZh: `放在图自己用的 Mist 画布上,状态文字自己给(svg 是 aria-hidden):labmate 面板在读项目时把它居中、下面一行「正在读取项目」;Graph 视图等数据时用 \`animated: false\`,按 \`GHOST_GRAPH_NODES\`(每个节点的中心 x 与底边 y)在节点下面放标签骨架。`,
 }
