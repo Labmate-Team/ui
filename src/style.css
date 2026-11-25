@@ -961,6 +961,10 @@
     cursor: pointer;
     transition: color 150ms ease;
   }
+  /* An icon-only segment (SegmentedItem.icon): a 16px LabIcon, so the segment is nearly square. */
+  [data-slot="segmented"] [data-segment-item][data-icon-only="true"] {
+    padding-inline: 0.875rem;
+  }
   [data-slot="segmented"] [data-segment-item]:first-of-type {
     border-top-left-radius: calc(var(--chamfer-control) - var(--stroke));
   }

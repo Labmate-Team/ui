@@ -158,7 +158,11 @@ on the LEFT (right-aligned, the title two lines at most, then the host's
 `meta` line, also two lines at most), beside a smaller shape (task 36, goal
 60, milestone 72 with no ring, chip or pips, project goal 104, Start 40, and
 30 for the Start of a level via `level`). `SHEET_NODE_BOX` gives those boxes
-so a host can centre a node on its shape. `inside` on a task or goal draws
+so a host can centre a node on its shape. `NodeGlyph` is the node drawn small
+(24 or 32px) for a row of text: the same shape and facets (`geometry.ts` and
+`facets.ts`, shared with the node components, so the glyph cannot drift from the
+node) in the status planes, with the status glyph (a goal's core and the project
+goal's badge drawn larger so the glyph reads); decorative unless given `label`. `inside` on a task or goal draws
 the stacked-layers badge ("holds other nodes"). The default slot of every
 node sits under the meta line, for host marks. A host fades a group of
 labels by setting `--graph-label-opacity` on an ancestor, and enlarges a
@@ -171,7 +175,17 @@ a node is styled from outside.
   halo, §10.53) around it. This replaces the old "edge swaps color, never an
   outer ring" field rule. Field labels (`FieldLabel`) are mono UPPERCASE.
 - SegmentedControl: the track is the Ink frame, segments sit flush with 1.5px
-  Ink dividers, labels mono 12px UPPERCASE, the selected segment Ink.
+  Ink dividers, labels mono 12px UPPERCASE, the selected segment Ink. An item
+  with `icon` draws a 16px LabIcon alone; its `label` becomes the segment's
+  `aria-label` and `title` (never an unlabeled icon segment).
+- Textarea `counter` (`{ max, from, length? }`): the count "n / max" appears in
+  the lower right once the length reaches `from` and stays until the component
+  unmounts; past `max` the field is `aria-invalid` (the Spark edge) and nothing
+  is cut. The host passes `length` when it counts differently (code points);
+  with a counter, `class` sizes the outer box.
+- SelectItem `indicator="start"` puts the selection check at the left edge
+  (default `end`, the right). Selection is still the check alone; highlight is
+  still the row tint.
 - Ghost text buttons are Ink text with a 1.5px underline offset 4px (§7.13);
   ghost ICON buttons rest on a Mist plate (`--icon-plate`). TextButton
   (`size="text"`) and block rows keep the plain hover chip.
@@ -179,8 +193,11 @@ a node is styled from outside.
   underline, the plain hover / press chip. Only for buttons inside a framed
   group whose frame already reads as the control (GraphZoom's cells) — a
   standalone ghost button keeps its marks. Don't strip them with classes.
-- Icons: use `LabIcon` (the 27-icon set, stroke by size: 16→2, 20→1.75,
-  24→1.5, 32→1.25). Lucide glyphs inside components are forced to mitred
+- Icons: use `LabIcon` (the set in `lab-icon/icons.ts`: the design doc's 27,
+  plus minus / fit / focus / layers and trash / thumb / external / text /
+  changes; stroke by size: 16→2, 20→1.75, 24→1.5, 32→1.25). A new icon is
+  straight segments on the 24px grid inside the 2px padding, at 0° / 45° /
+  60° / 90°, and must still read at 16px. Lucide glyphs inside components are forced to mitred
   joins and square caps.
 - Card marks: `TagChip` (Mist, lowercase mono, square), `PriorityMark`
   (▲▲▲ / ▲▲△ / ▲△△), `LoadBar` (flat cells). Schedule: `ScheduleBar` and

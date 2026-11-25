@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { GraphNodeVariant, MilestoneStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { MILESTONE_FACET_TONES } from './facets'
 import { MILESTONE_GEOMETRY } from './geometry'
 import { PADLOCK, PADLOCK_OPEN, STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import NodeLabel from './NodeLabel.vue'
@@ -106,14 +107,7 @@ const name = computed(() => STATUS_NAME[props.status === 'not-started' ? 'not-st
         :aria-label="`Milestone, ${name}, ${left} days left`"
       >
         <g stroke="var(--ink)" stroke-opacity="0.18" stroke-width="1" stroke-linejoin="miter">
-          <polygon :points="MILESTONE_GEOMETRY.facets[0]" :fill="c.l" />
-          <polygon :points="MILESTONE_GEOMETRY.facets[1]" :fill="c.b" />
-          <polygon :points="MILESTONE_GEOMETRY.facets[2]" :fill="c.l" />
-          <polygon :points="MILESTONE_GEOMETRY.facets[3]" :fill="c.b" />
-          <polygon :points="MILESTONE_GEOMETRY.facets[4]" :fill="c.d" />
-          <polygon :points="MILESTONE_GEOMETRY.facets[5]" :fill="c.b" />
-          <polygon :points="MILESTONE_GEOMETRY.facets[6]" :fill="c.l" />
-          <polygon :points="MILESTONE_GEOMETRY.facets[7]" :fill="c.d" />
+          <polygon v-for="(points, i) in MILESTONE_GEOMETRY.facets" :key="i" :points="points" :fill="c[MILESTONE_FACET_TONES[i]!]" />
         </g>
         <polygon :points="MILESTONE_GEOMETRY.outline" fill="none" :stroke="edge" :stroke-width="edgeW" stroke-linejoin="miter" />
         <line :x1="MILESTONE_GEOMETRY.line.x1" :y1="MILESTONE_GEOMETRY.line.y1" :x2="MILESTONE_GEOMETRY.line.x2" :y2="MILESTONE_GEOMETRY.line.y2" :stroke="edge" stroke-width="1.5" />

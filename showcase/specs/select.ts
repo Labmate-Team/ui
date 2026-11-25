@@ -42,6 +42,9 @@ const FOCUS_NODES: Array<{ group: string, items: FocusNode[] }> = [
 ]
 const FOCUS_ITEMS = FOCUS_NODES.flatMap(g => g.items)
 
+// Versions of one document, newest first (the labmate panel's version picker): the check leads the row.
+const VERSIONS = [3, 2, 1].map(n => ({ value: `v${n}`, label: `Version ${n}` }))
+
 function triggerAndContent(state: Record<string, unknown>, items: () => unknown) {
   const size = state.size as 'default' | 'sm' | 'lg'
   return [
@@ -108,6 +111,25 @@ export const selectSpec: ComponentSpec = {
               h(SelectLabel, null, () => g.group),
               ...g.items.map(i => h(SelectItem, { value: i.value, status: i.status }, () => h(SelectItemText, null, () => i.label))),
             ]))),
+          ],
+        ),
+    },
+    {
+      name: 'Check on the left',
+      nameZh: '勾在左边',
+      state: { value: 'v2' },
+      note: '`indicator="start"` leads each row with the selection check, for a list read from its left edge (versions, newest first). Selection is still the check alone; the highlight is the row tint.',
+      noteZh: '`indicator="start"` 把选中的勾放在每行最左, 用于从左读的列表 (版本, 新的在上)。选中仍只靠勾; 高亮仍是行底色。',
+      render: state =>
+        h(
+          Select,
+          {
+            modelValue: String(state.value),
+            'onUpdate:modelValue': (v: unknown) => (state.value = String(v)),
+          },
+          () => [
+            h(SelectTrigger, { class: 'w-48' }, () => h(SelectValue, { placeholder: 'Pick a version' })),
+            h(SelectContent, null, () => VERSIONS.map(v => h(SelectItem, { value: v.value, indicator: 'start' }, () => h(SelectItemText, null, () => v.label)))),
           ],
         ),
     },

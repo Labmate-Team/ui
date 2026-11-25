@@ -35,6 +35,15 @@ export const LAB_ICONS = {
   focus: 'M9.5 6h5L18 9.5v5L14.5 18h-5L6 14.5v-5z M12 2v4 M12 18v4 M2 12h4 M18 12h4',
   // Stacked sheets: the levels of the graph (the panel's stacked view, and "has an inside").
   layers: 'M12 3l9 4.5-9 4.5-9-4.5z M3 12l9 4.5 9-4.5 M3 16.5l9 4.5 9-4.5',
+  // Annotation and artifact controls (labmate panel, Artifacts page): trash is a can with straight sides (suggest
+  // deleting); thumb is a raised thumb on a cuff, its slants at 60° (like); external is a box with an arrow leaving its
+  // corner at 45° (open in a new tab); text is three lines of copy, the last short (the body); changes is a plus over
+  // a minus (what changed).
+  trash: 'M3 6h18 M9 6V3h6v3 M5 6v15h14V6 M10 10v7 M14 10v7',
+  thumb: 'M3 11h4v10H3z M7 11l4-7h2v7h7v5l-3 5H7',
+  external: 'M10 4H4v16h16v-6 M14 4h6v6 M20 4l-9 9',
+  text: 'M4 6h16 M4 12h16 M4 18h10',
+  changes: 'M12 3v10 M7 8h10 M7 19h10',
 } as const
 
 export type LabIconName = keyof typeof LAB_ICONS

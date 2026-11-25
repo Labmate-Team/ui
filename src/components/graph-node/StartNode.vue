@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { GraphNodeVariant } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { START_FACET_FILLS } from './facets'
 import { START_GEOMETRY } from './geometry'
 import NodeLabel from './NodeLabel.vue'
 
@@ -33,10 +34,7 @@ const px = computed(() => sheet.value ? (props.level ? 30 : 40) : 72)
     <NodeLabel v-if="sheet && showLabel" side="left" :title="label" :meta="meta" weight="goal"><slot /></NodeLabel>
     <svg viewBox="0 0 72 72" :width="px" :height="px" class="shrink-0" role="img" :aria-label="level ? 'Start of this level' : 'Start of the project'">
       <g stroke="var(--ink)" stroke-opacity="0.25" stroke-width="1" stroke-linejoin="miter">
-        <polygon :points="START_GEOMETRY.facets[0]" fill="var(--graphite)" />
-        <polygon :points="START_GEOMETRY.facets[1]" fill="var(--ink)" />
-        <polygon :points="START_GEOMETRY.facets[2]" fill="var(--pulse)" />
-        <polygon :points="START_GEOMETRY.facets[3]" fill="var(--slate)" />
+        <polygon v-for="(points, i) in START_GEOMETRY.facets" :key="i" :points="points" :fill="START_FACET_FILLS[i]" />
       </g>
       <polygon :points="START_GEOMETRY.outline" fill="none" stroke="var(--node-edge)" stroke-width="2" stroke-linejoin="miter" />
     </svg>

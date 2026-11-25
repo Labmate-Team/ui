@@ -3,6 +3,7 @@ import { h } from 'vue'
 import { LAB_ICON_NAMES, LabIcon } from '#/components/lab-icon'
 
 const SIZES = ['16', '20', '24', '32'] as const
+const ANNOTATION_ICONS = ['trash', 'thumb', 'external', 'text', 'changes'] as const
 
 export const labIconSpec: ComponentSpec = {
   id: 'lab-icon',
@@ -21,6 +22,17 @@ export const labIconSpec: ComponentSpec = {
       render: () => LAB_ICON_NAMES.map(name =>
         h('span', { class: 'flex w-20 flex-col items-center gap-2' }, [
           h(LabIcon, { name, size: 24 }),
+          h('span', { class: 'text-data text-subtle-foreground' }, name),
+        ])),
+    },
+    {
+      name: 'Annotation icons',
+      nameZh: '批注用的图标',
+      note: 'Suggest deleting, like, open in a new tab, the body, what changed — at 16, 20 and 24px.',
+      noteZh: '建议删除、赞、在新标签页打开、正文、改动——16、20、24px。',
+      render: () => ANNOTATION_ICONS.map(name =>
+        h('span', { class: 'flex w-24 flex-col items-center gap-2' }, [
+          h('span', { class: 'flex items-end gap-3' }, ([16, 20, 24] as const).map(size => h(LabIcon, { name, size }))),
           h('span', { class: 'text-data text-subtle-foreground' }, name),
         ])),
     },

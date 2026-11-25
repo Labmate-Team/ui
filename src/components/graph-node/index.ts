@@ -1,5 +1,6 @@
 export { default as GoalNode } from './GoalNode.vue'
 export { default as MilestoneNode } from './MilestoneNode.vue'
+export { default as NodeGlyph } from './NodeGlyph.vue'
 export { default as PriorityLight } from './PriorityLight.vue'
 export { default as ProjectGoalNode } from './ProjectGoalNode.vue'
 export { default as StartNode } from './StartNode.vue'

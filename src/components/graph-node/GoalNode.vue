@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { GraphNodeVariant, WorkStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { goalFacetFills } from './facets'
 import { GOAL_GEOMETRY } from './geometry'
 import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import InsideBadge from './InsideBadge.vue'
@@ -32,14 +33,7 @@ const c = computed(() => statusPlanes(props.status))
 const glyph = computed(() => STATUS_GLYPH[props.status])
 const total = computed(() => Math.max(1, props.total))
 const done = computed(() => Math.min(total.value, Math.max(0, props.done)))
-const facets = computed(() => {
-  let lit = Math.round((done.value / total.value) * 5)
-  if (props.status === 'completed') lit = 5
-  if (props.status === 'not-started') lit = 0
-  const on = [c.value.b, c.value.d, c.value.d, c.value.b, c.value.l]
-  const off = ['var(--well)', 'var(--well-deep)', 'var(--well-deep)', 'var(--well)', 'var(--paper)']
-  return [0, 1, 2, 3, 4].map(i => (i < lit ? on[i] : off[i]))
-})
+const facets = computed(() => goalFacetFills(c.value, props.status, done.value, total.value))
 const dark = computed(() => props.status === 'halted')
 const ink = computed(() => (dark.value ? 'var(--paper)' : 'var(--ink)'))
 const sheet = computed(() => props.variant === 'sheet')
@@ -66,11 +60,7 @@ const metaLine = computed(() => props.meta ?? `${done.value}/${total.value} TASK
       :aria-label="`Goal, ${STATUS_NAME[status]}, ${done} of ${total} tasks`"
     >
       <g stroke="var(--ink)" stroke-opacity="0.18" stroke-width="1" stroke-linejoin="miter">
-        <polygon :points="GOAL_GEOMETRY.facets[0]" :fill="facets[0]" />
-        <polygon :points="GOAL_GEOMETRY.facets[1]" :fill="facets[1]" />
-        <polygon :points="GOAL_GEOMETRY.facets[2]" :fill="facets[2]" />
-        <polygon :points="GOAL_GEOMETRY.facets[3]" :fill="facets[3]" />
-        <polygon :points="GOAL_GEOMETRY.facets[4]" :fill="facets[4]" />
+        <polygon v-for="(points, i) in GOAL_GEOMETRY.facets" :key="i" :points="points" :fill="facets[i]" />
       </g>
       <polygon :points="GOAL_GEOMETRY.outline" fill="none" stroke="var(--node-edge)" stroke-width="2" stroke-linejoin="miter" />
       <polygon
