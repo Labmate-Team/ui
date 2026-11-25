@@ -10,6 +10,8 @@ const props = defineProps<{
   modelValue?: T
   items: SegmentedItem<T>[]
   ariaLabel?: string
+  /** Control height: `default` 44px, `sm` 36px (the small rung, beside a sm Select trigger or Button). */
+  size?: 'sm' | 'default'
   class?: HTMLAttributes['class']
 }>()
 
@@ -98,6 +100,7 @@ function clearPress() {
     data-slot="segmented"
     role="radiogroup"
     :aria-label="ariaLabel"
+    :data-size="size === 'sm' ? 'sm' : undefined"
     :class="cn(props.class)"
   >
     <div

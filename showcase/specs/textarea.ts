@@ -30,6 +30,17 @@ export const textareaSpec: ComponentSpec = {
       ],
     },
     {
+      name: 'Count at a height cap',
+      nameZh: '到了高度上限',
+      note: 'With a height cap on the text (here `[&>textarea]:max-h-32`) the text scrolls inside the box; the count has its own line under it and is never covered.',
+      noteZh: '给文字设了高度上限 (这里是 `[&>textarea]:max-h-32`) 时文字在框里滚动; 字数在它下面单独一行, 不会被文字盖住。',
+      render: () => h(Textarea, {
+        modelValue: Array.from({ length: 24 }, (_, i) => `Line ${i + 1} of a long note that runs past the height cap.`).join('\n'),
+        counter: { max: 2000, from: 1000 },
+        class: 'w-80 [&>textarea]:max-h-32 [&>textarea]:overflow-y-auto',
+      }),
+    },
+    {
       name: 'Count that stays',
       nameZh: '出现后不收起',
       note: 'Type past 30 characters, then delete: the count stays. Over 40 the edge turns Spark.',

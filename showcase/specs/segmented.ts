@@ -54,6 +54,16 @@ export const segmentedSpec: ComponentSpec = {
         h(SegmentedControl, { items: ICON_ITEMS, ariaLabel: 'Show', modelValue: item.value })),
     },
     {
+      name: 'Small',
+      nameZh: '小号',
+      note: '`size="sm"` is the 36px rung, the same height as a sm Select trigger or Button beside it.',
+      noteZh: '`size="sm"` 是 36px 一档, 与旁边 sm 的 Select 触发器或按钮同高。',
+      render: () => [
+        h(SegmentedControl, { items: ICON_ITEMS, ariaLabel: 'Show', modelValue: 'text', size: 'sm' }),
+        h(SegmentedControl, { items: BASIC_ITEMS, ariaLabel: 'Time range', modelValue: 'week', size: 'sm' }),
+      ],
+    },
+    {
       name: 'With a disabled item',
       nameZh: '含禁用项',
       state: { value: 'week' },

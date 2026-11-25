@@ -178,8 +178,12 @@ a node is styled from outside.
   Ink dividers, labels mono 12px UPPERCASE, the selected segment Ink. An item
   with `icon` draws a 16px LabIcon alone; its `label` becomes the segment's
   `aria-label` and `title` (never an unlabeled icon segment).
+  `size="sm"` is the 36px rung (beside a sm Select trigger or Button); the
+  default stays 44px.
 - Textarea `counter` (`{ max, from, length? }`): the count "n / max" appears in
-  the lower right once the length reaches `from` and stays until the component
+  the lower right, on its own line under the text inside the field's frame (the
+  box is the field; text scrolling under a height cap never runs under the
+  count), once the length reaches `from` and stays until the component
   unmounts; past `max` the field is `aria-invalid` (the Spark edge) and nothing
   is cut. The host passes `length` when it counts differently (code points);
   with a counter, `class` sizes the outer box.

@@ -14,7 +14,8 @@ const props = withDefaults(defineProps<{
   modelValue?: string | number
   size?: 'sm' | 'default' | 'lg'
   /**
-   * The character count in the lower right of the box. It appears once the length reaches `from` and then stays for
+   * The character count in the lower right of the box, on its own line under the text (the box is the field: text that
+   * scrolls under a height cap never runs under the count). It appears once the length reaches `from` and then stays for
    * the life of the component, also when the text is cut back below `from`. Past `max` the edge turns Spark and the
    * field is `aria-invalid`; input is never cut. `length` is the host's count (e.g. code points); without it the
    * component counts the code points of the value. With a counter, `class` sizes the outer box.
@@ -82,7 +83,7 @@ const fieldStateClass = ['outline-none resize-none', 'disabled:cursor-not-allowe
   <div
     v-else
     data-slot="textarea-counter-box"
-    :class="cn('relative flex w-full flex-col', props.class)"
+    :class="cn('flex w-full flex-col rounded-md', props.class)"
   >
     <textarea
       v-bind="attrs"
@@ -95,8 +96,7 @@ const fieldStateClass = ['outline-none resize-none', 'disabled:cursor-not-allowe
         fieldClass,
         sizeClass,
         fieldStateClass,
-        'flex-1',
-        counterShown && 'pb-7',
+        'flex-1 min-h-0',
       )"
     />
     <span
@@ -105,7 +105,7 @@ const fieldStateClass = ['outline-none resize-none', 'disabled:cursor-not-allowe
       data-slot="textarea-counter"
       :data-over="over ? 'true' : undefined"
       :class="cn(
-        'pointer-events-none absolute right-3 bottom-2 text-data',
+        'pointer-events-none self-end px-3 pb-2 text-data',
         over ? 'font-medium text-foreground' : 'text-muted-foreground',
       )"
     >{{ counterText }}</span>
