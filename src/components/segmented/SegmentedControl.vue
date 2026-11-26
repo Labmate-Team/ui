@@ -3,12 +3,15 @@ import type { HTMLAttributes } from 'vue'
 import type { SegmentedItem } from '.'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { cn } from '#/lib/utils'
+import { LabIcon } from '../lab-icon'
 
 const props = defineProps<{
   /** Selected value (v-model). Falls back to the first item when unset. */
   modelValue?: T
   items: SegmentedItem<T>[]
   ariaLabel?: string
+  /** Control height: `default` 44px, `sm` 36px (the small rung, beside a sm Select trigger or Button). */
+  size?: 'sm' | 'default'
   class?: HTMLAttributes['class']
 }>()
 
@@ -97,6 +100,7 @@ function clearPress() {
     data-slot="segmented"
     role="radiogroup"
     :aria-label="ariaLabel"
+    :data-size="size === 'sm' ? 'sm' : undefined"
     :class="cn(props.class)"
   >
     <div
@@ -113,6 +117,9 @@ function clearPress() {
       :data-active="active === item.value"
       :aria-checked="active === item.value"
       :disabled="item.disabled"
+      :data-icon-only="item.icon ? 'true' : undefined"
+      :aria-label="item.icon ? (item.label ?? String(item.value)) : undefined"
+      :title="item.icon ? (item.label ?? String(item.value)) : undefined"
       @pointerdown="onDown(item)"
       @pointerup="clearPress"
       @pointerleave="clearPress"
@@ -123,7 +130,10 @@ function clearPress() {
         name="item"
         :item="item"
       >
-        {{ item.label ?? item.value }}
+        <LabIcon v-if="item.icon" :name="item.icon" :size="16" />
+        <template v-else>
+          {{ item.label ?? item.value }}
+        </template>
       </slot>
     </button>
   </div>

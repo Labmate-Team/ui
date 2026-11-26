@@ -1,6 +1,6 @@
 import type { ComponentSpec } from '../lib/spec'
 import { h } from 'vue'
-import { GoalNode, GRAPH_NODE_VARIANTS, MilestoneNode, ProjectGoalNode, StartNode, TaskNode } from '#/components/graph-node'
+import { GoalNode, GRAPH_NODE_VARIANTS, MilestoneNode, NodeGlyph, ProjectGoalNode, StartNode, TaskNode } from '#/components/graph-node'
 import { WORK_STATUSES } from '#/components/status-chip'
 
 const MILESTONE_STATUSES = ['locked', 'ready', 'not-started', 'ongoing', 'completed', 'halted'] as const
@@ -200,4 +200,50 @@ export const projectGoalNodeSpec: ComponentSpec = {
     variant: state.variant as never,
     label: String(state.label),
   }),
+}
+
+const GLYPH_KINDS = ['start', 'task', 'goal', 'milestone', 'project-goal'] as const
+// The statuses each kind may take (§9); Start has none.
+const GLYPH_STATUSES: Record<typeof GLYPH_KINDS[number], readonly string[]> = {
+  'start': ['not-started'],
+  'task': WORK_STATUSES,
+  'goal': WORK_STATUSES,
+  'milestone': MILESTONE_STATUSES,
+  'project-goal': PROJECT_STATUSES,
+}
+
+export const nodeGlyphSpec: ComponentSpec = {
+  id: 'node-glyph',
+  name: 'NodeGlyph',
+  description: 'A node drawn small (24 or 32px) for a row of text: its own shape and facets in its status planes, with the status glyph.',
+  descriptionZh: '画小的节点 (24 或 32px), 放在一行文字里: 节点自己的形状与面, 按状态着色, 带状态字形。',
+  controls: [
+    { kind: 'enum', key: 'kind', label: 'Kind', options: GLYPH_KINDS, default: 'task' },
+    { kind: 'enum', key: 'status', label: 'Status', options: [...MILESTONE_STATUSES, 'paused', 'failed'], default: 'ongoing' },
+    { kind: 'enum', key: 'size', label: 'Size', options: ['24', '32'], default: '32', display: 'segmented' },
+  ],
+  examples: [
+    {
+      name: 'Every kind and status',
+      nameZh: '每种节点与状态',
+      note: 'Shapes and planes come from the node components\' own geometry; a goal without `done` / `total` lights all five facets.',
+      noteZh: '形状与面取自节点组件自己的几何; 不给 `done` / `total` 的 goal 五个面都亮。',
+      render: () => h('div', { class: 'flex flex-col gap-3' }, GLYPH_KINDS.map(kind =>
+        h('div', { class: 'flex items-center gap-4' }, [
+          h('span', { class: 'w-24 text-data text-subtle-foreground' }, kind),
+          ...GLYPH_STATUSES[kind].flatMap(status => [
+            h(NodeGlyph, { kind, status: status as never, size: 24, label: `${kind}, ${status}` }),
+            h(NodeGlyph, { kind, status: status as never, size: 32, label: `${kind}, ${status}` }),
+          ]),
+        ]))),
+    },
+    {
+      name: 'Goal progress',
+      nameZh: 'goal 的进度',
+      note: '`done` of `total` facets lit, clockwise from the top (§8.4).',
+      noteZh: '亮 `done` / `total` 个面, 从顶上起顺时针 (§8.4)。',
+      render: () => [0, 1, 2, 3, 4, 5].map(done => h(NodeGlyph, { kind: 'goal', status: 'ongoing', size: 32, done, total: 5 })),
+    },
+  ],
+  render: state => h(NodeGlyph, { kind: state.kind as never, status: state.status as never, size: Number(state.size) as never, label: `${state.kind}, ${state.status}` }),
 }

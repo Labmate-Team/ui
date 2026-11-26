@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import type { GraphNodeVariant, TaskPriority, WorkStatus } from './types'
 import { computed } from 'vue'
 import { cn } from '#/lib/utils'
+import { TASK_FACET_TONES } from './facets'
 import { TASK_GEOMETRY } from './geometry'
 import { STATUS_GLYPH, statusPlanes } from '../status-chip/glyphs'
 import InsideBadge from './InsideBadge.vue'
@@ -58,10 +59,7 @@ const lightOn = computed(() => props.lit || props.status === 'ongoing')
         :aria-label="`Task, ${STATUS_NAME[status]}${priority && status === 'ongoing' ? `, ${priority.toUpperCase()}` : ''}`"
       >
         <g :stroke="c.d" stroke-width="0.75" stroke-linejoin="miter">
-          <polygon :points="TASK_GEOMETRY.facets[0]" :fill="c.l" />
-          <polygon :points="TASK_GEOMETRY.facets[1]" :fill="c.b" />
-          <polygon :points="TASK_GEOMETRY.facets[2]" :fill="c.d" />
-          <polygon :points="TASK_GEOMETRY.facets[3]" :fill="c.b" />
+          <polygon v-for="(points, i) in TASK_GEOMETRY.facets" :key="i" :points="points" :fill="c[TASK_FACET_TONES[i]!]" />
         </g>
         <polygon :points="TASK_GEOMETRY.outline" fill="none" stroke="var(--node-edge)" stroke-width="1.5" stroke-linejoin="miter" />
         <g v-if="glyph.d" transform="translate(19 19) scale(0.75)">

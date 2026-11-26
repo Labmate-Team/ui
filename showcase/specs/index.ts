@@ -8,7 +8,7 @@ import { checkboxSpec } from './checkbox'
 import { dialogSpec } from './dialog'
 import { dropdownMenuSpec } from './dropdown-menu'
 import { fieldSpec } from './field'
-import { goalNodeSpec, milestoneNodeSpec, projectGoalNodeSpec, startNodeSpec, taskNodeSpec } from './graph-nodes'
+import { goalNodeSpec, milestoneNodeSpec, nodeGlyphSpec, projectGoalNodeSpec, startNodeSpec, taskNodeSpec } from './graph-nodes'
 import { ghostGraphSpec } from './ghost-graph'
 import { graphZoomSpec } from './graph-zoom'
 import { inputSpec } from './input'
@@ -64,6 +64,7 @@ export const componentSpecs: ComponentSpec[] = [
   goalNodeSpec,
   milestoneNodeSpec,
   projectGoalNodeSpec,
+  nodeGlyphSpec,
   graphZoomSpec,
   ghostGraphSpec,
   scheduleBarSpec,

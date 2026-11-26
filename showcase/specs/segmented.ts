@@ -9,6 +9,12 @@ const BASIC_ITEMS: SegmentedItem<string>[] = [
   { value: 'month', label: 'Month' },
 ]
 
+// Icon-only segments: the label names each one (aria-label and tooltip).
+const ICON_ITEMS: SegmentedItem<string>[] = [
+  { value: 'text', label: 'Text', icon: 'text' },
+  { value: 'changes', label: 'Changes', icon: 'changes' },
+]
+
 const FOUR_ITEMS: SegmentedItem<string>[] = [...BASIC_ITEMS, { value: 'year', label: 'Year' }]
 
 const DISABLED_ITEMS: SegmentedItem<string>[] = [
@@ -38,6 +44,24 @@ export const segmentedSpec: ComponentSpec = {
           modelValue: String(state.value),
           'onUpdate:modelValue': (v: unknown) => (state.value = String(v)),
         }),
+    },
+    {
+      name: 'Icons only',
+      nameZh: '只有图标',
+      note: 'An item with `icon` draws the icon alone; its `label` becomes the segment\'s aria-label and tooltip.',
+      noteZh: '带 `icon` 的项只画图标; 它的 `label` 成为该段的 aria-label 与提示。',
+      render: () => ICON_ITEMS.map(item =>
+        h(SegmentedControl, { items: ICON_ITEMS, ariaLabel: 'Show', modelValue: item.value })),
+    },
+    {
+      name: 'Small',
+      nameZh: '小号',
+      note: '`size="sm"` is the 36px rung, the same height as a sm Select trigger or Button beside it.',
+      noteZh: '`size="sm"` 是 36px 一档, 与旁边 sm 的 Select 触发器或按钮同高。',
+      render: () => [
+        h(SegmentedControl, { items: ICON_ITEMS, ariaLabel: 'Show', modelValue: 'text', size: 'sm' }),
+        h(SegmentedControl, { items: BASIC_ITEMS, ariaLabel: 'Time range', modelValue: 'week', size: 'sm' }),
+      ],
     },
     {
       name: 'With a disabled item',

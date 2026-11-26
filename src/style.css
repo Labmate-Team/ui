@@ -185,6 +185,7 @@
      No outer rings: the edge never stacks, it just changes color. */
   [data-slot="input"],
   [data-slot="textarea"],
+  [data-slot="textarea-counter-box"],
   [data-slot="input-group"],
   [data-slot="tags-input"],
   [data-slot="number-field"],
@@ -213,6 +214,7 @@
   /* DEFAULT (solid): the hairline itself turns near-black on focus. */
   [data-slot="input"]:focus,
   [data-slot="textarea"]:focus,
+  [data-slot="textarea-counter-box"]:focus-within,
   [data-slot="input-group"]:focus-within,
   [data-slot="number-field"]:focus-within,
   [data-slot="pin-input-slot"]:focus,
@@ -236,6 +238,7 @@
      stacks outside it. */
   [data-slot="input"][aria-invalid="true"],
   [data-slot="textarea"][aria-invalid="true"],
+  [data-slot="textarea-counter-box"]:has([aria-invalid="true"]),
   [data-slot="input-group"]:has([aria-invalid="true"]),
   [data-slot="tags-input"][aria-invalid="true"],
   [data-slot="tags-input"]:has([aria-invalid="true"]),
@@ -960,6 +963,18 @@
     color: var(--foreground);
     cursor: pointer;
     transition: color 150ms ease;
+  }
+  /* An icon-only segment (SegmentedItem.icon): a 16px LabIcon, so the segment is nearly square. */
+  [data-slot="segmented"] [data-segment-item][data-icon-only="true"] {
+    padding-inline: 0.875rem;
+  }
+  /* size="sm": the small control rung (36px, the same height as a sm Select trigger or Button). */
+  [data-slot="segmented"][data-size="sm"] [data-segment-item] {
+    height: calc(2.25rem - 2 * var(--stroke));
+    padding-inline: 0.875rem;
+  }
+  [data-slot="segmented"][data-size="sm"] [data-segment-item][data-icon-only="true"] {
+    padding-inline: 0.625rem;
   }
   [data-slot="segmented"] [data-segment-item]:first-of-type {
     border-top-left-radius: calc(var(--chamfer-control) - var(--stroke));
@@ -2694,11 +2709,11 @@
      button rests on a plate; hover deepens it one well step. A `bare` ghost
      ([data-bare], inside a framed group whose frame already reads as the
      control) has no plate: transparent at rest, the plain ghost hover chip. */
-  [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-lg"]):not([data-bare])::before {
+  [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-xs"], [data-size="icon-lg"]):not([data-bare])::before {
     background-color: var(--icon-plate);
   }
   @media (hover: hover) {
-    [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-lg"]):not([data-bare]):hover::before {
+    [data-button][data-variant="ghost"]:is([data-size="icon"], [data-size="icon-sm"], [data-size="icon-xs"], [data-size="icon-lg"]):not([data-bare]):hover::before {
       background-color: var(--icon-plate-hover);
     }
   }
@@ -2733,9 +2748,16 @@ svg.lucide {
   outline-offset: 2px;
 }
 :is([data-slot="input"], [data-slot="textarea"], [data-slot="pin-input-slot"]):focus,
-:is([data-slot="input-group"], [data-slot="number-field"], [data-slot="tags-input"]):focus-within {
+:is([data-slot="input-group"], [data-slot="number-field"], [data-slot="tags-input"], [data-slot="textarea-counter-box"]):focus-within {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
+}
+/* A Textarea with a counter: the box is the field (frame, focus, Spark edge above), the text scrolls inside it and the
+   count sits on its own line under the text, so text never runs under the count. The inner textarea draws no edge. */
+[data-slot="textarea-counter-box"] > [data-slot="textarea"],
+[data-slot="textarea-counter-box"] > [data-slot="textarea"]:focus {
+  box-shadow: none;
+  outline: none;
 }
 
 @layer components {
