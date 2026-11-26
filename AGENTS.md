@@ -698,7 +698,9 @@ dark. Tooltip carries no border at all — its solid fill is its own edge.
 
 - Control height ladder: `sm` h-9 (36) · default h-11 (**44**, the LabMate
   touch target) · `lg` h-12 (48); icon-only buttons `icon-sm` 36 / `icon` 44 /
-  `icon-lg` 48. Fields, Select triggers, NativeSelect, NumberField, InputGroup
+  `icon-lg` 48. `icon-xs` (a 24px plate, 16px glyph; the click area is the plate) is only
+  for icon actions inside a dense card (an annotation card's edit / withdraw /
+  resolve); it is not a page control. Fields, Select triggers, NativeSelect, NumberField, InputGroup
   and Toggle share the same ladder. Use the default size unless density truly
   requires `sm`.
 - Icon glyph sizes scale with the control on ONE shared ladder — don't free-set

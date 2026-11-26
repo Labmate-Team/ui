@@ -72,6 +72,17 @@ export const buttonSpec: ComponentSpec = {
       ],
     },
     {
+      name: 'Card actions (icon-xs)',
+      nameZh: '卡片里的图标动作 (icon-xs)',
+      note: 'Icon actions inside a dense card rest on a 24px plate with the 16px glyph; the click area is the plate. Not a page control — the 44px target stays the rule everywhere else.',
+      noteZh: '密的卡片里的图标动作垫 24px 的小格、16px 的图标, 点按范围就是这一格。不是页面上的控件——别处仍是 44px。',
+      render: () => [
+        h(Button, { variant: 'ghost', size: 'icon-xs', 'aria-label': 'Add' }, () => h(Plus)),
+        h(Button, { variant: 'ghost', size: 'icon-xs', 'aria-label': 'Refresh' }, () => h(RefreshCw)),
+        h(Button, { variant: 'ghost', size: 'icon-sm', 'aria-label': 'Add' }, () => h(Plus)),
+      ],
+    },
+    {
       name: 'Loading modes',
       nameZh: '加载模式',
       note: 'overlay hides the label and centers the spinner — width never shifts; leading grows the spinner in before the label, the full-width CTA pattern. The loading glyph is always the arrow-less Spinner, never a spinning action icon. loading blocks clicks — busy is not disabled.',

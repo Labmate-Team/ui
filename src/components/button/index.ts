@@ -61,6 +61,12 @@ export const buttonVariants = cva(
         lg: 'h-12 rounded-md px-6 has-[>svg]:px-4',
         icon: 'size-11',
         'icon-sm': 'size-9',
+        // ICON-XS = the 24px plate for icon actions INSIDE a dense card (an annotation
+        // card's edit / withdraw / resolve). Not a page control: the 44px touch target
+        // (§7.14) stays the rule everywhere else. The plate is 24px with the chip chamfer
+        // and the 16px glyph (the smallest rung of the icon ladder, §6), and the click area
+        // is exactly the plate (no invisible margin).
+        'icon-xs': 'size-6 rounded-sm',
         'icon-lg': 'size-12',
         // TEXT = inline/compact affordance. Uses the base text-control (14px) type —
         // the standard button text size — so it reads as real clickable text, with a
@@ -124,6 +130,7 @@ export const buttonSizeKeys = [
   'lg',
   'icon',
   'icon-sm',
+  'icon-xs',
   'icon-lg',
   'text',
 ] as const satisfies readonly NonNullable<ButtonVariants['size']>[]
